@@ -3,4 +3,5 @@ Main Library: https://scikit-learn.org/stable/index.html
 
 Managing GIT Branches, Merging with Master in VS Code: 
 https://www.youtube.com/watch?v=b9LTz6joMf8&ab_channel=VisualStudioCode
+https://www.youtube.com/watch?v=LdSwWxVzUpo&ab_channel=VisualStudioCode
 https://www.youtube.com/watch?v=SD7YNLv5Evc&ab_channel=CodingAffliction
