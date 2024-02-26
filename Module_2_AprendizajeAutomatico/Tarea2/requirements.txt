@@ -27,3 +27,8 @@ sphinxext-opengraph>=0.4.2
 plotly>=5.14.0
 conda-lock>=2.4.2
 Pyarrow>=15.0.0
+keras
+tensorflow
+torch
+torchvision
+torchaudio
