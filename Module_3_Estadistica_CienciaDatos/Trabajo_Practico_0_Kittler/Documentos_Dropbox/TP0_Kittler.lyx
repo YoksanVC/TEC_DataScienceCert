@@ -1,0 +1,477 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass article
+\begin_preamble
+\usepackage{palatino}
+\end_preamble
+\use_default_options true
+\maintain_unincluded_children false
+\language spanish
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style swiss
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Trabajo Práctico 0: El algoritmo de umbralización de Kittler
+\end_layout
+
+\begin_layout Author
+Ph.
+ D.
+ Saúl Calderón Ramírez 
+\begin_inset Newline newline
+\end_inset
+
+Instituto Tecnológico de Costa Rica, 
+\begin_inset Newline newline
+\end_inset
+
+Escuela de Computación
+\begin_inset Newline newline
+\end_inset
+
+PAttern Recongition and MAchine Learning Group (PARMA-Group)
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Fecha de entrega: 
+\series default
+Domingo 21 de Abril.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Entrega
+\series default
+: Un archivo .zip con el código fuente LaTeX o Lyx, el pdf, y un script en
+ jupyter, debidamente documentado.
+ El script en jupyter debe estar escrito usando pytorch.
+ A través del TEC-digital.
+\end_layout
+
+\begin_layout Standard
+
+\series bold
+Modo de trabajo
+\series default
+: Grupos de 3 personas.
+\end_layout
+
+\begin_layout Standard
+En el presente trabajo práctico se introducirá el problema de la clasificación
+ a través del estudio del concepto de máxima verosimilitud.
+ Se realizará un repaso de la teoría básica relacionada con los fenómenos
+ aleatorios con distribución Gaussiana, para facilitar el análisis de la
+ función de verosimilitud.
+ Posteriormente se visitará el problema de la segmentación de imágenes desde
+ un enfoque de máxima verosimilitud, donde se desarrollará el algoritmo
+ de Kittler 
+\begin_inset CommandInset citation
+LatexCommand cite
+key "kittler1986minimum"
+literal "true"
+
+\end_inset
+
+.
+ El estudiante implementará tal algoritmo y analizará los resultados respecto
+ a los planteos teóricos introducidos previamente.
+ 
+\end_layout
+
+\begin_layout Section
+Implementación del algoritmo de Kittler
+\end_layout
+
+\begin_layout Enumerate
+Implemente el algoritmo de Kittler, y realice una prueba con la imagen de
+ entrada provista, aplicando posteriormente el umbral óptimo obtenido.
+ 
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+
+\series bold
+(20 puntos)
+\series default
+ Implemente una funcion 
+\emph on
+calcular_momentos_estadisticos(T, p)
+\emph default
+ la cual reciba un umbral candidato 
+\begin_inset Formula $T$
+\end_inset
+
+ y una funcion de densidad 
+\begin_inset Formula $p$
+\end_inset
+
+, y retorne todos los parametros de la función.
+ Comente su implementacion con detalle en este informe.
+ 
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Diseñe al menos 2 pruebas unitarias donde verifique el funcionamiento correcto.
+ Detalle en este documento el diseño de tales pruebas y los resultados,
+ indicando si son los esperados.
+ 
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+
+\series bold
+(20 puntos)
+\series default
+ Implemente la función 
+\emph on
+calcular_costo_J(T) 
+\emph default
+la cual calcule el costo del umbral candidato 
+\begin_inset Formula $T$
+\end_inset
+
+.
+ Comente su implementacion con detalle en este informe.
+ 
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Diseñe al menos 2 pruebas unitarias donde verifique el funcionamiento correcto.
+ Detalle en este documento el diseño de tales pruebas y los resultados,
+ indicando si son los esperados.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+
+\series bold
+(20 puntos)
+\series default
+ Basado en ambas funciones, implemente la función 
+\emph on
+calcular_T_optimo_Kittler(Imagen) 
+\emph default
+la cual retorne el 
+\begin_inset Formula $T$
+\end_inset
+
+ optimo para umbralizar la imagen recibida, además de la imagen umbralizada.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Aplique el algoritmo de Kittler en la imagen 
+\emph on
+cuadro1_005.bmp, 
+\emph default
+provista.
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Grafique el histograma normalizado de la imagen de entrada provista.
+\end_layout
+
+\begin_layout Enumerate
+Grafique la función 
+\begin_inset Formula $J(T)$
+\end_inset
+
+, y documente el valor 
+\begin_inset Formula $T=\tau$
+\end_inset
+
+ que logra el valor mínimo de 
+\begin_inset Formula $J(T)$
+\end_inset
+
+, junto con las medias y varianzas de las dos funciones Gaussianas superpuestas.
+ Son coherentes tales valores con el histograma graficado en el punto anterior?
+\begin_inset Separator latexpar
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+El valor óptimo en el caso de esta imagen debe ser cercano a 
+\begin_inset Formula $\tau=168$
+\end_inset
+
+, con 
+\begin_inset Formula $\mu_{1}=149.45$
+\end_inset
+
+, 
+\begin_inset Formula $\mu_{2}=219.49$
+\end_inset
+
+ 
+\begin_inset Formula $\sigma_{1}^{2}=15.36$
+\end_inset
+
+ y 
+\begin_inset Formula $\sigma_{2}^{2}=10.05$
+\end_inset
+
+.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Lograría el umbral óptimo 
+\begin_inset Formula $\tau$
+\end_inset
+
+ obtenido umbralizar satisfactoriamente la imagen de prueba? Umbralice la
+ imagen de entrada provista y muestre los resultados.
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Asigne con valor de 255 los pixeles del cuadrado (clase 
+\emph on
+foreground
+\emph default
+), y 0 los del fondo (clase 
+\emph on
+background
+\emph default
+).
+ 
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Enumerate
+(
+\series bold
+25 puntos
+\series default
+) Pruebe la implementacion del algortimo de Kittler para detectar la actividad
+ de voz humana en un audio, usando el audio de prueba provisto 
+\emph on
+contaminated_audio.wav.
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Grafique el histograma del audio leido, y argumente si es apropiado usar
+ el algoritmo de Kittler o no.
+\end_layout
+
+\begin_layout Enumerate
+Grafique la función 
+\begin_inset Formula $J(T)$
+\end_inset
+
+, y documente el valor 
+\begin_inset Formula $T=\tau$
+\end_inset
+
+ que logra el valor mínimo de 
+\begin_inset Formula $J(T)$
+\end_inset
+
+, junto con las medias y varianzas de las dos funciones Gaussianas superpuestas.
+ Son coherentes tales valores con el histograma graficado en el punto anterior?
+\end_layout
+
+\begin_layout Enumerate
+Lograría el umbral óptimo 
+\begin_inset Formula $\tau$
+\end_inset
+
+ obtenido partir satisfactoriamente el sonido de prueba en 3 segmentos (2
+ de actividades de audio y 1 segmento sin actividad )? Umbralice el audio
+ provisto y muestre los resultados.
+\end_layout
+
+\end_deeper
+\end_deeper
+\begin_layout Enumerate
+
+\series bold
+(15 puntos)
+\series default
+ La distancia de Bhattacharyya compara dos funciones de densidad de probabilidad
+ 
+\begin_inset Formula $p\left(x\right)$
+\end_inset
+
+ y 
+\begin_inset Formula $q\left(x\right)$
+\end_inset
+
+: 
+\begin_inset Formula 
+\[
+D_{\textrm{JS}}\left(p,q\right)=-\ln\left(\sum_{x\in X}\sqrt{p\left(x\right)q\left(x\right)}\right)
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Implemente la función 
+\emph on
+calcular_bhattacharyya_distance(p,q), 
+\emph default
+para comparar
+\emph on
+ 
+\emph default
+las funciones de densidad estimada con el ajuste del modelo mixto Gaussiano
+ con Kittler 
+\begin_inset Formula $p\left(x\right)$
+\end_inset
+
+ y la aproximacion de la densidad con el histograma de los datos 
+\begin_inset Formula $q\left(x\right)$
+\end_inset
+
+ para las dos pruebas realizadas con la imagen y el audio.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Explique la relación entre la distancia de Bhattacharyya y el proceso de
+ estimación de los parámetros óptimos implementado en el algoritmo de Kittler
+ ¿Que sucede cuando la distancia de Bhattacharyya entre el histograma de
+ los datos y el modelo estimado crece o decrece ?
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+
+\series bold
+(10 puntos extra)
+\series default
+ Calcule el umbral óptimo con el algoritmo de Kittler, y umbralice la imagen
+ de 
+\emph on
+trackedCell15.tif
+\emph default
+ provista documentando los resultados.
+ Muestre la imagen umbralizada y el histograma de la misma.
+ 
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Usando la imagen, su histograma, y la matriz de confusion para la clase
+ 
+\emph on
+foreground,
+\emph default
+ explique el porqué del resultado obtenido.
+\end_layout
+
+\begin_layout Enumerate
+Como modificaría el algoritmo de Kittler para mejorar el resultado de la
+ umbralización? Puede usar recursos bibliográficos externos.
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+\begin_inset CommandInset bibtex
+LatexCommand bibtex
+bibfiles "BIB"
+options "plain"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
