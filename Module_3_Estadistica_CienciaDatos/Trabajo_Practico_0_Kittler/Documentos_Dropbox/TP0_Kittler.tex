@@ -1,0 +1,142 @@
+%% LyX 2.3.7 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[spanish]{article}
+\usepackage[T1]{fontenc}
+\usepackage{amstext}
+
+\makeatletter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\usepackage{palatino}
+
+\makeatother
+
+\usepackage{babel}
+\addto\shorthandsspanish{\spanishdeactivate{~<>}}
+
+\begin{document}
+\title{Trabajo Pr\'{a}ctico 0: El algoritmo de umbralizaci\'{o}n de Kittler}
+\author{Ph. D. Sa\'{u}l Calder\'{o}n Ram\'{\i}rez \\
+Instituto Tecnol\'{o}gico de Costa Rica, \\
+Escuela de Computaci\'{o}n\\
+PAttern Recongition and MAchine Learning Group (PARMA-Group)}
+
+\maketitle
+\textbf{Fecha de entrega: }Domingo 21 de Abril.
+
+\textbf{Entrega}: Un archivo .zip con el c\'{o}digo fuente LaTeX o
+Lyx, el pdf, y un script en jupyter, debidamente documentado. El script
+en jupyter debe estar escrito usando pytorch. A trav\'{e}s del TEC-digital.
+
+\textbf{Modo de trabajo}: Grupos de 3 personas.
+
+En el presente trabajo pr\'{a}ctico se introducir\'{a} el problema
+de la clasificaci\'{o}n a trav\'{e}s del estudio del concepto de m\'{a}xima
+verosimilitud. Se realizar\'{a} un repaso de la teor\'{\i}a b\'{a}sica
+relacionada con los fen\'{o}menos aleatorios con distribuci\'{o}n
+Gaussiana, para facilitar el an\'{a}lisis de la funci\'{o}n de verosimilitud.
+Posteriormente se visitar\'{a} el problema de la segmentaci\'{o}n
+de im\'{a}genes desde un enfoque de m\'{a}xima verosimilitud, donde
+se desarrollar\'{a} el algoritmo de Kittler \cite{kittler1986minimum}.
+El estudiante implementar\'{a} tal algoritmo y analizar\'{a} los resultados
+respecto a los planteos te\'{o}ricos introducidos previamente. 
+
+\section{Implementaci\'{o}n del algoritmo de Kittler}
+\begin{enumerate}
+\item Implemente el algoritmo de Kittler, y realice una prueba con la imagen
+de entrada provista, aplicando posteriormente el umbral \'{o}ptimo
+obtenido. 
+
+\begin{enumerate}
+\item \textbf{(20 puntos)} Implemente una funcion \emph{calcular\_momentos\_estadisticos(T,
+p)} la cual reciba un umbral candidato $T$ y una funcion de densidad
+$p$, y retorne todos los parametros de la funci\'{o}n. Comente su
+implementacion con detalle en este informe. 
+\begin{enumerate}
+\item Dise\~{n}e al menos 2 pruebas unitarias donde verifique el funcionamiento
+correcto. Detalle en este documento el dise\~{n}o de tales pruebas
+y los resultados, indicando si son los esperados. 
+\end{enumerate}
+\item \textbf{(20 puntos)} Implemente la funci\'{o}n \emph{calcular\_costo\_J(T)
+}la cual calcule el costo del umbral candidato $T$. Comente su implementacion
+con detalle en este informe. 
+\begin{enumerate}
+\item Dise\~{n}e al menos 2 pruebas unitarias donde verifique el funcionamiento
+correcto. Detalle en este documento el dise\~{n}o de tales pruebas
+y los resultados, indicando si son los esperados.
+\end{enumerate}
+\item \textbf{(20 puntos)} Basado en ambas funciones, implemente la funci\'{o}n
+\emph{calcular\_T\_optimo\_Kittler(Imagen) }la cual retorne el $T$
+optimo para umbralizar la imagen recibida, adem\'{a}s de la imagen
+umbralizada. 
+\item Aplique el algoritmo de Kittler en la imagen \emph{cuadro1\_005.bmp,
+}provista.
+
+\begin{enumerate}
+\item Grafique el histograma normalizado de la imagen de entrada provista.
+\item Grafique la funci\'{o}n $J(T)$, y documente el valor $T=\tau$ que
+logra el valor m\'{\i}nimo de $J(T)$, junto con las medias y varianzas
+de las dos funciones Gaussianas superpuestas. Son coherentes tales
+valores con el histograma graficado en el punto anterior?
+
+\begin{enumerate}
+\item El valor \'{o}ptimo en el caso de esta imagen debe ser cercano a $\tau=168$,
+con $\mu_{1}=149.45$, $\mu_{2}=219.49$ $\sigma_{1}^{2}=15.36$ y
+$\sigma_{2}^{2}=10.05$.
+\end{enumerate}
+\item Lograr\'{\i}a el umbral \'{o}ptimo $\tau$ obtenido umbralizar satisfactoriamente
+la imagen de prueba? Umbralice la imagen de entrada provista y muestre
+los resultados.
+\begin{enumerate}
+\item Asigne con valor de 255 los pixeles del cuadrado (clase \emph{foreground}),
+y 0 los del fondo (clase \emph{background}). 
+\end{enumerate}
+\end{enumerate}
+\item (\textbf{25 puntos}) Pruebe la implementacion del algortimo de Kittler
+para detectar la actividad de voz humana en un audio, usando el audio
+de prueba provisto \emph{contaminated\_audio.wav.}
+\begin{enumerate}
+\item Grafique el histograma del audio leido, y argumente si es apropiado
+usar el algoritmo de Kittler o no.
+\item Grafique la funci\'{o}n $J(T)$, y documente el valor $T=\tau$ que
+logra el valor m\'{\i}nimo de $J(T)$, junto con las medias y varianzas
+de las dos funciones Gaussianas superpuestas. Son coherentes tales
+valores con el histograma graficado en el punto anterior?
+\item Lograr\'{\i}a el umbral \'{o}ptimo $\tau$ obtenido partir satisfactoriamente
+el sonido de prueba en 3 segmentos (2 de actividades de audio y 1
+segmento sin actividad )? Umbralice el audio provisto y muestre los
+resultados.
+\end{enumerate}
+\end{enumerate}
+\item \textbf{(15 puntos)} La distancia de Bhattacharyya compara dos funciones
+de densidad de probabilidad $p\left(x\right)$ y $q\left(x\right)$:
+\[
+D_{\textrm{JS}}\left(p,q\right)=-\ln\left(\sum_{x\in X}\sqrt{p\left(x\right)q\left(x\right)}\right)
+\]
+
+\begin{enumerate}
+\item Implemente la funci\'{o}n \emph{calcular\_bhattacharyya\_distance(p,q),
+}para comparar\emph{ }las funciones de densidad estimada con el ajuste
+del modelo mixto Gaussiano con Kittler $p\left(x\right)$ y la aproximacion
+de la densidad con el histograma de los datos $q\left(x\right)$ para
+las dos pruebas realizadas con la imagen y el audio. 
+\item Explique la relaci\'{o}n entre la distancia de Bhattacharyya y el
+proceso de estimaci\'{o}n de los par\'{a}metros \'{o}ptimos implementado
+en el algoritmo de Kittler \textquestiondown Que sucede cuando la
+distancia de Bhattacharyya entre el histograma de los datos y el modelo
+estimado crece o decrece ?
+\end{enumerate}
+\item \textbf{(10 puntos extra)} Calcule el umbral \'{o}ptimo con el algoritmo
+de Kittler, y umbralice la imagen de \emph{trackedCell15.tif} provista
+documentando los resultados. Muestre la imagen umbralizada y el histograma
+de la misma. 
+\begin{enumerate}
+\item Usando la imagen, su histograma, y la matriz de confusion para la
+clase \emph{foreground,} explique el porqu\'{e} del resultado obtenido.
+\item Como modificar\'{\i}a el algoritmo de Kittler para mejorar el resultado
+de la umbralizaci\'{o}n? Puede usar recursos bibliogr\'{a}ficos externos.
+\end{enumerate}
+\end{enumerate}
+\bibliographystyle{plain}
+\bibliography{BIB}
+
+\end{document}
