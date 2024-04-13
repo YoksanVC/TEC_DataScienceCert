@@ -1,0 +1,208 @@
+\documentclass[spanish]{article}
+\usepackage[T1]{fontenc}
+\usepackage[a4paper]{geometry}
+\geometry{verbose,tmargin=3cm,bmargin=3cm,lmargin=2cm,rmargin=2cm,headheight=2cm,headsep=2cm,footskip=2cm}
+\usepackage{amstext}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{cancel}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{Python}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=Python}
+
+\makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+%% Because html converters don't know tabularnewline
+\providecommand{\tabularnewline}{\\}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\usepackage{palatino}
+\pagenumbering{gobble}
+
+\makeatother
+
+\usepackage{babel}
+\begin{document}
+\begin{flushleft}
+\begin{tabular}{|l|l|}
+\hline 
+ & \tabularnewline
+\textbf{\large{}Instituto Tecnol\'{o}gico de Costa Rica} & QUIZ 0\tabularnewline
+\textbf{\large{}Escuela de Computaci\'{o}n} & Entrega: Domingo 14 de Abril, a trav\'{e}s del TEC digital\tabularnewline
+ & Debe subir un \emph{pdf }con la respuesta,\tabularnewline
+Programa en Ciencias de Datos & generado con latex (adjunte los archivos .tex asociados).\tabularnewline
+\textbf{Curso: Estadistica} & \tabularnewline
+ & \tabularnewline
+Profesor: Ph. D. Sa\'{u}l Calder\'{o}n Ram\'{\i}rez & Valor: 100 pts.\tabularnewline
+ & Puntos Obtenidos: \_\_\_\_\_\_\_\_\_\_\_\_\tabularnewline
+ & \tabularnewline
+ & \tabularnewline
+ & Nota: \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\tabularnewline
+ & \tabularnewline
+\cline{2-2} 
+\multicolumn{2}{|c|}{}\tabularnewline
+\multicolumn{2}{|l|}{Nombre del (la) estudiante: \underline{Yoksan Varela Cambronero}}\tabularnewline
+\multicolumn{1}{|l}{} & \tabularnewline
+\multicolumn{1}{|l}{C\'{e}dula: \underline {206100530}} & \tabularnewline
+\multicolumn{1}{|l}{} & \tabularnewline
+\hline 
+\end{tabular}
+\par\end{flushleft}
+\begin{enumerate}
+\item \textbf{(60 puntos)} Demuestre que el \emph{skew }o la inclinaci\'{o}n
+de una funci\'{o}n de densidad exponencial:
+\[
+p\left(x|\lambda\right)=\lambda e^{-\lambda x}
+\]
+es siempre $\gamma=2$, tomando en cuenta que $\mathbb{E}\left[X^{3}\right]=\frac{6}{\lambda^{3}}$.
+
+\paragraph{Soluci\'{o}n Pregunta 1:}
+Para la funci\'{o}n de densidad Exponencial se conocen 2 momentos estad\'{i}sticos:
+\begin{equation} \label{Esperanza_Exponencial}
+\mathbb{E}(X) = \frac{1}{\lambda} 
+\end{equation}
+\begin{equation} \label{Varianza_Exponencial}
+Var(X) = \frac{1}{\lambda^2} 
+\end{equation}
+De \ref{Varianza_Exponencial} se puede calcular la desviaci\'{o}n est\'{a}ndar:
+\begin{equation} \label{STD_Exponencial}
+\sigma(X)=\sqrt{Var(X)}=\frac{1}{\lambda} 
+\end{equation}
+Tambi\'{e}n se sabe que en t\'{e}rminos generales:
+\begin{equation} \label{Varianza_func_Esperanza}
+Var(X) = \mathbb{E}(X^2)-\mathbb{E}(X)^2
+\end{equation}
+Si se iguala \ref{Varianza_func_Esperanza} con \ref{Varianza_Exponencial} y se sustituye \ref{Esperanza_Exponencial}, se obtiene la siguiente relaci\'{o}n que ser\'{a} de utilidad m\'{a}s adelante:
+\begin{gather*}
+    Var(X) = \mathbb{E}(X^2)-\mathbb{E}(X)^2 = \frac{1}{\lambda^2}\\
+    \mathbb{E}(X^2)-\left(\frac{1}{\lambda}\right)^2 = \frac{1}{\lambda^2}\\
+    \mathbb{E}(X^2)=\frac{1}{\lambda^2} + \frac{1}{\lambda^2}
+\end{gather*}
+\begin{equation} \label{Esperanza_Xcuadrado_Exponencial}
+\mathbb{E}(X^2)=\frac{2}{\lambda^2}
+\end{equation}
+Ya con estas funciones establecidas, se procede a simplificar la funci\'{o}n del sesgo, que est\'{a} dada por:
+\begin{equation} \label{Skewness}
+\gamma(X) =\frac{\mathbb{E}\left[(X-\mathbb{E}(X))^3\right]}{\sigma^{3}} 
+\end{equation}
+Primero, se usa \ref{STD_Exponencial} para sustituir en el denominador y dejarlo en t\'{e}rminos de $\lambda$, y replantear el numberador como el desarrollo de una diferencia de dos factores al cubo:
+\begin{gather*}
+    \gamma(X) =\frac{\mathbb{E}\left[X^3-3X^2\mathbb{E}(X)+3X\mathbb{E}(X)^2-\mathbb{E}(X)^3\right]}{(\frac{1}{\lambda})^{3}}\\
+    \gamma(X) =\lambda^{3}\mathbb{E}\left[X^3-3X^2\mathbb{E}(X)+3X\mathbb{E}(X)^2-\mathbb{E}(X)^3\right]
+\end{gather*}
+Se sustituye \ref{Esperanza_Exponencial} en tres elementos de la ecuaci\'{o}n anterior y se aplica las propiedades de superposici\'{o}n y sacar los escalares de la Esperanza para obtener lo siguiente:
+\begin{gather*}
+    \gamma(X) =\lambda^{3}\left[\mathbb{E}(X^3)-\mathbb{E}\left(\frac{3X^2}{\lambda}\right)+\mathbb{E}\left(3X\left(\frac{1}{\lambda}\right)^2\right)-\mathbb{E}\left(\frac{1}{\lambda}\right)^3\right]\\
+    \gamma(X) =\lambda^{3}\left[\mathbb{E}(X^3)-\frac{3}{\lambda}\mathbb{E}(X^2)+\frac{3}{\lambda^2}\mathbb{E}(X)-\frac{1}{\lambda^3}\right]\\
+    \gamma(X) =\lambda^{3}\left[\mathbb{E}(X^3)-\frac{3}{\lambda}\mathbb{E}(X^2)+\frac{3}{\lambda^3}-\frac{1}{\lambda^3}\right]
+\end{gather*}
+\begin{equation} \label{gamma_partial_1}
+    \gamma(X) =\lambda^{3}\left[\mathbb{E}(X^3)-\frac{3}{\lambda}\mathbb{E}(X^2)+\frac{2}{\lambda^3}\right]
+\end{equation}
+En este punto, se sustituyen \ref{Esperanza_Xcuadrado_Exponencial} y la condici\'{o}n mencionada en el enunciado que $\mathbb{E}\left[X^{3}\right]=\frac{6}{\lambda^{3}}$ en \ref{gamma_partial_1}:
+\begin{gather*}
+    \gamma(X) =\lambda^{3}\left[\frac{6}{\lambda^3}-\frac{3}{\lambda}\left(\frac{2}{\lambda^2}\right)+\frac{2}{\lambda^3}\right]\\
+    \gamma(X) =\lambda^{3}\left[\cancel{\frac{6}{\lambda^3}}-\cancel{\frac{6}{\lambda^3}}+\frac{2}{\lambda^3}\right]
+\end{gather*}
+\begin{equation} \label{gamma_partial_2}
+    \gamma(X) =\lambda^{3}\left[\frac{2}{\lambda^3}\right]
+\end{equation}
+Para finalizar, se cancelan los $\lambda^3$ en \ref{gamma_partial_2} y as\'{i} obtener la siguiente expresi\'{o}n:
+\begin{gather*}
+    \gamma(X) =\cancel{\lambda^{3}}\left[\frac{2}{\cancel{\lambda^3}}\right]\\
+    \gamma(X) = 2
+\end{gather*}
+Y as\'{i} demostrar que $\gamma(X)=2$ para la funci\'{o}n de densidad Exponencial.\\
+\\
+\item \textbf{(40 puntos)} Con pytorch, genere 100 muestras de tama\~{n}o
+$N\text{=1000}$, usando una densidad exponencial. Hagalo para dos
+valores diferentes de $\lambda$ a su elecci\'{o}n. Para esas muestras,
+calcule de forma vectorial el sesgo $\gamma$, y verifique la demostracion
+anterior. Adjunte el archivo jupyter con tal codigo.
+
+\paragraph{Soluci\'{o}n Pregunta 2:}
+En el archivo adjunto \emph{Quiz0\_YoksanVarela.ipynb} hay una secci\'{o}n llamada \emph{Funciones Generales}, en la cual se ha creado una funcion con el nombre \textbf{skewness\_func}; la cual recibe un atributo solamente: \textbf{sample}. La ecuaci\'{o}n que resuelve esta funcion es:\\
+\begin{equation}
+\gamma(x) =\frac{\mathbb{E}\left[(X-\mathbb{E}(X))^3\right]}{\sigma^{3}} 
+\end{equation}
+
+Esta funci\'{o}n calcula el skewness en tres partes:
+\begin{itemize}
+    \item Se calcula la esperanza del sample que se pasa como atributo.
+    \item Se finaliza el c\'{a}lculo del numerador usando el sample.
+    \item Se calcula el denominador que es elevar al cubo la desviaci\'{o}n estandar del sample.
+    \item Finalmente, se calula la esperanza completa del numerador y se divide entre el denominador. Este resultado es lo que retorna la funci\'{o}n.
+\end{itemize}
+A continuaci\'{o}n se muestra el c\'{o}digo implementado:
+\begin{lstlisting}[language=Python]
+def skewness_func(sample):
+    """
+    Esta funcion calcula el Skewness de una funcion de densidad de probabilidad
+    Args:
+        sample (tensor): Sample de una funcion de distribucion de probabilidad
+    """
+    esperanza = torch.mean(torch.tensor(sample))
+    numerador = torch.tensor(sample-esperanza) ** 3
+    divisor = torch.std(torch.tensor(sample)) ** 3
+    
+    skew = torch.mean(numerador)/divisor
+    return skew
+\end{lstlisting}
+Ya con esta funci\'{o}n implementada, se procede a crear dos diferentes samples, con $N\text{=1000}$ y 100 muestras cada uno. El primero de estos samples usa un $\lambda\text{=0.6}$, y el segundo sample usa un $\lambda\text{=1.5}$. Ambos c\'{o}digos se presentan a continuaci\'{o}n:
+\begin{lstlisting}[language=Python]
+    # Creacion de la primera funcion de densidad, con lambda = 0.6 y 100 muestras
+    n = 1000
+    lambda_dist1 = 0.6
+    exponential_dist1 = torch.distributions.exponential.Exponential(lambda_dist1)
+    exponential_sample1 = exponential_dist1.sample((n,100)).squeeze()
+
+    # Creacion de la segunda funcion de densidad, con lambda = 1.5 y 100 muestras
+    n = 1000
+    lambda_dist2 = 1.5
+    exponential_dist2 = torch.distributions.exponential.Exponential(lambda_dist2)
+    exponential_sample2 = exponential_dist2.sample((n,100)).squeeze()
+\end{lstlisting}
+Finalmente, despu\'{e}s de ejecutar ambos codigos, se procede a llamar la funcion $\textbf{skewness\_func}$ pasando como atributo \emph{exponential\_dist1} y \emph{exponential\_dist2}. Los resultados de muestran a continuaci\'{o}n:
+\begin{lstlisting}[language=Python]
+    # Calculando el skewness de la primera funcion:
+    skewness_1 = skewness_func(exponential_sample1)
+    print("Skeness de la primera funcion:\n", skewness_1)
+    -- Skeness de la primera funcion:
+    tensor(1.9944)
+
+    # Calculando el skewness de la segunda funcion:
+    skewness_2 = skewness_func(exponential_sample2)
+    print("Skeness de la segunda funcion:\n", skewness_2)
+    -- Skeness de la segunda funcion:
+    tensor(1.9753)
+\end{lstlisting}
+\textbf{Conclusi\'{o}n:} Con los resultados obtenidos queda verificada la demostraci\'{o}n en la soluci\'{o}n de la pregunta 1.
+\end{enumerate}
+
+\end{document}
