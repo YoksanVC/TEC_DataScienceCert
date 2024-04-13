@@ -1,0 +1,63 @@
+%% LyX 2.3.7 created this file.  For more info, see http://www.lyx.org/.
+%% Do not edit unless you really know what you are doing.
+\documentclass[english]{article}
+\usepackage[T1]{fontenc}
+\usepackage[a4paper]{geometry}
+\geometry{verbose,tmargin=3cm,bmargin=3cm,lmargin=2cm,rmargin=2cm,headheight=2cm,headsep=2cm,footskip=2cm}
+\usepackage{amstext}
+\usepackage{amssymb}
+
+\makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+%% Because html converters don't know tabularnewline
+\providecommand{\tabularnewline}{\\}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\usepackage{palatino}
+\pagenumbering{gobble}
+
+\makeatother
+
+\usepackage{babel}
+\begin{document}
+\begin{flushleft}
+\begin{tabular}{|l|l|}
+\hline 
+ & \tabularnewline
+\textbf{\large{}Instituto Tecnol\'{o}gico de Costa Rica} & QUIZ 0\tabularnewline
+\textbf{\large{}Escuela de Computaci\'{o}n} & Entrega: Domingo 14 de Abril, a trav\'{e}s del TEC digital\tabularnewline
+ & Debe subir un \emph{pdf }con la respuesta,\tabularnewline
+Programa en Ciencias de Datos & generado con latex (adjunte los archivos .tex asociados).\tabularnewline
+\textbf{Curso: Estadistica} & \tabularnewline
+ & \tabularnewline
+Profesor: Ph. D. Sa\'{u}l Calder\'{o}n Ram\'{\i}rez & Valor: 100 pts.\tabularnewline
+ & Puntos Obtenidos: \_\_\_\_\_\_\_\_\_\_\_\_\tabularnewline
+ & \tabularnewline
+ & \tabularnewline
+ & Nota: \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\tabularnewline
+ & \tabularnewline
+\cline{2-2} 
+\multicolumn{2}{|c|}{}\tabularnewline
+\multicolumn{2}{|l|}{Nombre del (la) estudiante: \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_}\tabularnewline
+\multicolumn{1}{|l}{} & \tabularnewline
+\multicolumn{1}{|l}{Carn\'{e}: \_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_\_} & \tabularnewline
+\multicolumn{1}{|l}{} & \tabularnewline
+\hline 
+\end{tabular}
+\par\end{flushleft}
+\begin{enumerate}
+\item \textbf{(60 puntos)} Demuestre que el \emph{skew }o la inclinaci\'{o}n
+de una funci\'{o}n de densidad exponencial:
+\[
+p\left(x|\lambda\right)=\lambda e^{-\lambda x}
+\]
+es siempre $\gamma=2$, tomando en cuenta que $\mathbb{E}\left[X^{3}\right]=\frac{6}{\lambda^{3}}$. 
+\item \textbf{(40 puntos)} Con pytorch, genere 100 muestras de tama\~{n}o
+$N\text{=1000}$, usando una densidad exponencial. Hagalo para dos
+valores diferentes de $\lambda$ a su elecci\'{o}n. Para esas muestras,
+calcule de forma vectorial el sesgo $\gamma$, y verifique la demostracion
+anterior. Adjunte el archivo jupyter con tal codigo. 
+\end{enumerate}
+
+\end{document}
