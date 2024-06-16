@@ -1,2 +1,2 @@
 # Run Main code
-spark-submit main.py
+spark-submit program_YoksanVarela.py ./datasets/atletas.csv ./datasets/nadar.csv ./datasets/correr.csv
