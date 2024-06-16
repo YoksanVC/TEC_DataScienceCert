@@ -1,0 +1,2 @@
+# Run Main code
+spark-submit main.py
