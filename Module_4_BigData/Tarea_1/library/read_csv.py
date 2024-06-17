@@ -1,5 +1,5 @@
 from pyspark.sql import SparkSession
-from pyspark.sql.types import DateType, IntegerType, StringType, StructField, StructType
+from pyspark.sql.types import IntegerType, StringType, StructField, StructType
 
 def read_csv(csv_file_name):
     spark = SparkSession.builder.appName("Read and Print CSV File").getOrCreate()
@@ -14,14 +14,14 @@ def read_csv(csv_file_name):
                             StructField('Distancia Total (m)', IntegerType()),
                             StructField('Total brazadas', IntegerType()),
                             StructField('Total de minutos de actividad', IntegerType()),
-                            StructField('Fecha', DateType())])
+                            StructField('Fecha', StringType())])
     elif("correr" in csv_file_name):
         csv_schema = StructType([StructField('Correo Electronico', StringType()),
                             StructField('Ritmo Cardiaco', IntegerType()),
                             StructField('Distancia Total (m)', IntegerType()),
                             StructField('Ganancia de Altura (m)', IntegerType()),
                             StructField('Total de minutos de actividad', IntegerType()),
-                            StructField('Fecha', DateType())])
+                            StructField('Fecha', StringType())])
 
     dataframe = spark.read.csv(csv_file_name,
                             schema=csv_schema,
