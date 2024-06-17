@@ -51,6 +51,14 @@ def bpm_correction(dataframe, limit = 80):
 
 
 def date_format(date):
+    """ Function to check the date format and set it to YYY-MM-DD
+
+    Args:
+        date (string): String with the date to be analyzed
+
+    Returns:
+        date: Date fixed with the right format
+    """
     try:
         # Try to parse the date with the expected format
         date_obj = datetime.datetime.strptime(date, '%Y-%m-%d')
