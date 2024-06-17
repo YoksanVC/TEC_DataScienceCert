@@ -1,7 +1,6 @@
 # General Librarias
 from pyspark.sql.functions import col, udf
 from pyspark.sql.types import StringType
-from pyspark.sql import SparkSession
 from library.data_integrity import clean_nan
 from library.data_integrity import bpm_correction
 from library.data_integrity import date_format
