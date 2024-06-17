@@ -1,6 +1,6 @@
 # General Librarias
-from pyspark.sql.functions import col, udf
-from pyspark.sql.types import StringType
+from pyspark.sql.functions import col, udf, to_date
+from pyspark.sql.types import DateType
 from library.data_integrity import clean_nan
 from library.data_integrity import bpm_correction
 from library.data_integrity import date_format
@@ -78,8 +78,9 @@ def test_correct_date(spark_session):
     control_ds = spark_session.createDataFrame(control_data,['ID', 'Name', 'Birth Date'])
     control_ds.show()
     
-    # Register function to convert date as UDF
-    udf_date_format = udf(date_format, StringType())
+    # Create list of formats and register function to convert date as UDF
+    formats = ['%Y-%m-%d', '%d-%m-%Y', '%Y/%m/%d', '%d/%m/%Y']
+    udf_date_format = udf(lambda x: date_format(x, formats), DateType())
 
     # Apply UDF to Birth Date
     corrected_ds = control_ds.withColumn('Birth Date', udf_date_format(col('Birth Date')))
@@ -92,8 +93,11 @@ def test_correct_date(spark_session):
             (4, "Esteban", '2011-08-20'),
         ],
         ['ID', 'Name', 'Birth Date'])
+    
+    # Converting Birth Date to Date type for expected dataset
+    expected_ds_dateType = expected_ds.withColumn('Birth Date', to_date(col('Birth Date'), 'yyyy-MM-dd'))
 
-    expected_ds.show()
+    expected_ds_dateType.show()
     corrected_ds.show()
 
-    assert corrected_ds.collect() == expected_ds.collect()
+    assert corrected_ds.collect() == expected_ds_dateType.collect()
