@@ -1,13 +1,18 @@
 # General Imports
 from pyspark.sql.functions import col, udf, lit
 from pyspark.sql.types import DateType
+import logging
 from library.args_parser import ArgParser
 from library.read_csv import read_csv
 from library.data_integrity import clean_nan, date_format
 from library.data_transformation import dataframe_joiner_byEmail, keep_columns, dataframe_union, aggregate_by_email_date
 
-# Main function
-def main():
+# Configuring logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# General Function
+def elt_data():
     # Parsing arguments
     atletas_csv_file, nadar_csv_file, correr_csv_file = ArgParser()
 
@@ -47,7 +52,7 @@ def main():
         df_nadar_aggr.show()
         df_nadar_aggr.printSchema()
     else:
-        print("Error during aggregation with email and date, aborting")
+        logger.info("Error during aggregation with email and date, aborting")
         return False
     
     df_correr_aggregated = aggregate_by_email_date(df_correr_date_std)
@@ -60,7 +65,7 @@ def main():
         df_correr_aggr.show()
         df_correr_aggr.printSchema()
     else:
-        print("Error during aggregation with email and date, aborting")
+        logger.info("Error during aggregation with email and date, aborting")
         return False
 
     # Adding the corresponding sport to each dataframe
@@ -75,12 +80,12 @@ def main():
     # Join df_atletas_clean with each df for nadar and correr
     df_partial_join_nadar = dataframe_joiner_byEmail(df_atletas_clean,df_nadar_with_sport)
     if(df_partial_join_nadar == False):
-        print("Error during dataframes join, aborting")
+        logger.info("Error during dataframes join, aborting")
         return False
     
     df_partial_join_correr = dataframe_joiner_byEmail(df_atletas_clean,df_correr_with_sport)
     if(df_partial_join_correr == False):
-        print("Error during dataframes join, aborting")
+        logger.info("Error during dataframes join, aborting")
         return False
 
     # Concatenate both partial df
@@ -89,7 +94,7 @@ def main():
         df_sports_contact.show(200)
         df_sports_contact.printSchema()
     else:
-        print("Error during dataframes union, aborting")
+        logger.info("Error during dataframes union, aborting")
         return False
     
     # Reordering columns
@@ -112,7 +117,18 @@ def main():
     df_activities_date_sorted = df_activities_clean.orderBy(df_activities_clean['Fecha'].asc())
     df_activities_date_sorted.show(200)
     df_activities_date_sorted.printSchema()
+    
+    # Return dataframe ready to be analyzed
+    return df_activities_date_sorted
 
+# Main function
+def main():
+    # Creating the dataframe to be analyzed
+    df_general = elt_data()
+    logger.info("+++ General DataFrame to be Analyzed: +++")
+    df_general.show(200)
+    df_general.printSchema()
+    
 
 # Read attributes from command line to store each file in a variable
 if __name__ == '__main__':
