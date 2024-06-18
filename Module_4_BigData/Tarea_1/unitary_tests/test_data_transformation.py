@@ -1,5 +1,6 @@
 # General Librarias
-from library.data_transformation import dataframe_joiner_byEmail, keep_columns, dataframe_union
+from pyspark.sql.functions import lit
+from library.data_transformation import dataframe_joiner_byEmail, keep_columns, dataframe_union, aggregate_by_email_date
 
 def test_dataframe_joiner_byEmail(spark_session):
     """ Test the join function between the values inCorreo_Electronico column """
@@ -112,3 +113,62 @@ def test_concatenate_different_columns(spark_session):
     concatenated_ds = dataframe_union(df1_ds,df2_ds)
 
     assert concatenated_ds == False
+    
+def test_aggr_by_email_date(spark_session):
+    """ Test for aggregation using Correo_Electronico_Atleta and Date columns """
+    sportlog_data = [('jose.artavia@example1.com', 'Ingeniero', 45, '2024-06-21'), 
+                    ('maria.cambronero@example1.com', 'Arquitecto', 32, '2024-06-21'), 
+                    ('jose.artavia@example1.com', 'Ingeniero', 22, '2024-06-21'), 
+                    ('maria.cambronero@example1.com', 'Arquitecto', 44, '2024-06-21')]
+    sportlog_ds = spark_session.createDataFrame(sportlog_data,['Correo_Electronico_Atleta', 'Puesto', 'Distancia_Total_(m)','Fecha'])
+    sportlog_ds.show()
+    
+    aggregated_ds = aggregate_by_email_date(sportlog_ds)
+    
+    expected_ds = spark_session.createDataFrame(
+        [
+            ('maria.cambronero@example1.com', '2024-06-21', 76),
+            ('jose.artavia@example1.com', '2024-06-21', 67)
+        ],
+        ['Correo_Electronico_Atleta', 'Fecha','sum(Distancia_Total_(m))'])
+    
+    expected_ds.show()
+    aggregated_ds.show()
+    
+    assert aggregated_ds.collect() == expected_ds.collect()
+
+def test_aggr_NaN_value(spark_session):
+    """ Test for failure mode when NaN values are present """
+    sportlog_data = [('jose.artavia@example1.com', 'Ingeniero', 45, '2024-06-21'), 
+                    ('maria.cambronero@example1.com', 'Arquitecto', 32, '2024-06-21'), 
+                    ('jose.artavia@example1.com', 'Ingeniero', None, '2024-06-21'), 
+                    ('maria.cambronero@example1.com', 'Arquitecto', None, '2024-06-21')]
+    sportlog_ds = spark_session.createDataFrame(sportlog_data,['Correo_Electronico_Atleta', 'Puesto', 'Distancia_Total_(m)','Fecha'])
+    sportlog_ds.show()
+    
+    aggregated_ds = aggregate_by_email_date(sportlog_ds)
+    
+    expected_ds = spark_session.createDataFrame(
+        [
+            ('maria.cambronero@example1.com', '2024-06-21', 32),
+            ('jose.artavia@example1.com', '2024-06-21', 45)
+        ],
+        ['Correo_Electronico_Atleta', 'Fecha','sum(Distancia_Total_(m))'])
+    
+    expected_ds.show()
+    aggregated_ds.show()
+    
+    assert aggregated_ds.collect() == expected_ds.collect()
+    
+def test_aggr_missing_date (spark_session):
+    """ Test for failure mode when one column is missing, in this case, Fecha """
+    sportlog_data = [('jose.artavia@example1.com', 'Ingeniero', 45), 
+                    ('maria.cambronero@example1.com', 'Arquitecto', 32), 
+                    ('jose.artavia@example1.com', 'Ingeniero', 22), 
+                    ('maria.cambronero@example1.com', 'Arquitecto', 44)]
+    sportlog_ds = spark_session.createDataFrame(sportlog_data,['Correo_Electronico_Atleta', 'Puesto', 'Distancia_Total_(m)'])
+    sportlog_ds.show()
+    
+    aggregated_ds = aggregate_by_email_date(sportlog_ds)
+    
+    assert aggregated_ds == False

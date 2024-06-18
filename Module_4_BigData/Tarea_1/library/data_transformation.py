@@ -1,6 +1,6 @@
 # Data Transformation: Function to do different data transformations
 # General imports
-from pyspark.sql.functions import col
+from pyspark.sql.functions import col, when, isnan
 
 def dataframe_joiner_byEmail(dataframe1, dataframe2):
     """ Function to join two dataframes by Correo_Electronico column
@@ -62,4 +62,24 @@ def dataframe_union(dataframe1, dataframe2):
         return df_concatenated
     else:
         print("Dataframes can't be concatenated, they have different columns")
+        return False
+    
+def aggregate_by_email_date(dataframe):
+    """ Function to do aggregation using Email and Date columns
+
+    Args:
+        dataframe (DataFrame): DataFrame to be aggregated
+
+    Returns:
+        df_aggregated: aggregated DataFrame
+        or False: If the columns are missing
+    """
+    columns_to_check = ['Correo_Electronico_Atleta', 'Fecha','Distancia_Total_(m)']
+    if all(column in dataframe.columns for column in columns_to_check):
+        # Replacing any NaN with zeros to avoid sum issues
+        dataframe_clean = dataframe.withColumn('Distancia_Total_(m)', when(isnan(col('Distancia_Total_(m)')), 0).otherwise(col('Distancia_Total_(m)')))
+        df_aggregated = dataframe_clean.groupBy('Correo_Electronico_Atleta', 'Fecha').sum()
+        return df_aggregated
+    else:
+        print("Dataframe missing Correo_Electronico_Atleta and/or Fecha and/or Distancia_Total_(m) columns")
         return False
