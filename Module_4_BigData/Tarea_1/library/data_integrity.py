@@ -1,7 +1,5 @@
 # Data Integrity: Function to check different data integrity problems like null/missing vales, values without sense, others.
 # General imports
-from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, when, isnan
 import datetime
 
 def clean_nan(dataframe):
@@ -25,6 +23,7 @@ def clean_nan(dataframe):
     print(f"Final count of rows after removing NaN or Null: {final_rows_count}")
     print(f"Percentage of rows lost: {round(rows_lost,2)}%")
 
+    cleanned_dataframe.show()
     return cleanned_dataframe
 
 

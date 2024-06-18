@@ -1,8 +1,7 @@
 # General Librarias
 from pyspark.sql.functions import col, udf, to_date
 from pyspark.sql.types import DateType
-from library.data_integrity import clean_nan
-from library.data_integrity import date_format
+from library.data_integrity import clean_nan, date_format
 
 def test_remove_rows_nan(spark_session):
     """ Test the NaN cleaning process (removing rows) """
