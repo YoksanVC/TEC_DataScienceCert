@@ -1,9 +1,10 @@
 # General Imports
-from pyspark.sql.functions import col, udf
+from pyspark.sql.functions import col, udf, lit
 from pyspark.sql.types import DateType
 from library.args_parser import ArgParser
 from library.read_csv import read_csv
-from library.data_integrity import clean_nan, bpm_correction, date_format
+from library.data_integrity import clean_nan, date_format
+from library.data_transformation import dataframe_joiner_byEmail, keep_columns, dataframe_union
 
 # Main function
 def main():
@@ -17,27 +18,58 @@ def main():
 
     # Removing any NaN or null value on df_atletas because there is no way to recover lost data on this data frame, and it's important for upcoming joints
     df_atletas_clean = clean_nan(df_atletas)
-    df_atletas_clean.show()
 
-    # Correcting Ritmo cardiaco in df_nadar and df_correr so data will be standardize
-    df_nadar_bpm_corrected = bpm_correction(df_nadar)
-    df_nadar_bpm_corrected.show()
-
-    df_correr_bpm_corrected = bpm_correction(df_correr)
-    df_correr_bpm_corrected.show()
+    # Keeping the only columns that are needed: Correo_Electronico, Distancia_Total_(m), y Fecha
+    df_nadar_reduced = keep_columns(df_nadar)
+    df_correr_reduced = keep_columns(df_correr)
 
     # Standardizing date type in both nadar and correr dataframes
     # Register function to convert date as UDF
     formats = ['%Y-%m-%d', '%d-%m-%Y', '%Y/%m/%d', '%d/%m/%Y']
     udf_date_format = udf(lambda x: date_format(x, formats), DateType())
 
-    df_nadar_date_std = df_nadar_bpm_corrected.withColumn('Fecha', udf_date_format(col('Fecha')))
+    df_nadar_date_std = df_nadar_reduced.withColumn('Fecha', udf_date_format(col('Fecha')))
     df_nadar_date_std.show()
     df_nadar_date_std.printSchema()
 
-    df_correr_date_std = df_correr_bpm_corrected.withColumn('Fecha', udf_date_format(col('Fecha')))
+    df_correr_date_std = df_correr_reduced.withColumn('Fecha', udf_date_format(col('Fecha')))
     df_correr_date_std.show()
     df_correr_date_std.printSchema()
+
+    # Adding the corresponding sport to each dataframe
+    df_nadar_with_sport = df_nadar_date_std.withColumn('Deporte', lit('Nadar'))
+    df_nadar_with_sport.show()
+    df_nadar_with_sport.printSchema()
+
+    df_correr_with_sport = df_correr_date_std.withColumn('Deporte', lit('Correr'))
+    df_correr_with_sport.show()
+    df_correr_with_sport.printSchema()
+
+    # Join df_atletas_clean with each df for nadar and correr
+    df_partial_join_nadar = dataframe_joiner_byEmail(df_atletas_clean,df_nadar_with_sport)
+    df_partial_join_correr = dataframe_joiner_byEmail(df_atletas_clean,df_correr_with_sport)
+
+    # Concatenate both partial df
+    df_sports_contact = dataframe_union(df_partial_join_nadar, df_partial_join_correr)
+    if(df_sports_contact != False):
+        df_sports_contact.show(200)
+        df_sports_contact.printSchema()
+    else:
+        print("Error during dataframes union, aborting")
+        return False
+    
+    # Reordering columns
+    df_activities = \
+        df_sports_contact.select(
+        col('Correo_Electronico'),
+        col('Nombre'),
+        col('Pais'),
+        col('Deporte').alias('Actividad'),
+        col('Distancia_Total_(m)'),
+        col('Fecha'))
+    
+    df_activities.show(200)
+    df_activities.printSchema()
 
 
 # Read attributes from command line to store each file in a variable
