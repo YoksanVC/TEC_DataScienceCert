@@ -172,3 +172,26 @@ def test_aggr_missing_date (spark_session):
     aggregated_ds = aggregate_by_email_date(sportlog_ds)
     
     assert aggregated_ds == False
+    
+def test_aggr_using_Null(spark_session):
+    """ Test for failure mode when aggregating with Null values """
+    sportlog_data = [('jose.artavia@example1.com', 'Ingeniero', 45, '2024-06-21'), 
+                    ('maria.cambronero@example1.com', 'Arquitecto', 32, '2024-06-21'), 
+                    ('jose.artavia@example1.com', 'Ingeniero', 22, None), 
+                    (None, 'Arquitecto', 44, '2024-06-21')]
+    sportlog_ds = spark_session.createDataFrame(sportlog_data,['Correo_Electronico_Atleta', 'Puesto', 'Distancia_Total_(m)','Fecha'])
+    sportlog_ds.show()
+    
+    aggregated_ds = aggregate_by_email_date(sportlog_ds)
+    
+    expected_ds = spark_session.createDataFrame(
+        [
+            ('maria.cambronero@example1.com', '2024-06-21', 32),
+            ('jose.artavia@example1.com', '2024-06-21', 45)
+        ],
+        ['Correo_Electronico_Atleta', 'Fecha','sum(Distancia_Total_(m))'])
+    
+    expected_ds.show()
+    aggregated_ds.show()
+    
+    assert aggregated_ds.collect() == expected_ds.collect()
