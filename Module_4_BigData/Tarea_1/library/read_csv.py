@@ -2,7 +2,15 @@ from pyspark.sql import SparkSession
 from pyspark.sql.types import IntegerType, StringType, StructField, StructType
 
 def read_csv(csv_file_name):
-    spark = SparkSession.builder.appName("Read and Print CSV File").getOrCreate()
+    """ Function to read a CSV file and create a dataframe
+
+    Args:
+        csv_file_name (CSV file): File to be read and convert to dataframe
+
+    Returns:
+        dataframe: DataFrame created from CSV file
+    """
+    spark = SparkSession.builder.appName("Top Atletas por Pais").getOrCreate()
 
     if ("atleta" in csv_file_name):
         csv_schema = StructType([StructField('Correo_Electronico', StringType()),

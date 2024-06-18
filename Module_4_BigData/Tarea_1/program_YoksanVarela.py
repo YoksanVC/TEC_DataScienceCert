@@ -1,11 +1,12 @@
 # General Imports
+import logging
 from pyspark.sql.functions import col, udf, lit
 from pyspark.sql.types import DateType
-import logging
 from library.args_parser import ArgParser
 from library.read_csv import read_csv
 from library.data_integrity import clean_nan, date_format
 from library.data_transformation import dataframe_joiner_byEmail, keep_columns, dataframe_union, aggregate_by_email_date
+from library.data_analysis import top_athletes_totalDistance_perCountry
 
 # Configuring logging
 logging.basicConfig(level=logging.INFO)
@@ -125,9 +126,27 @@ def elt_data():
 def main():
     # Creating the dataframe to be analyzed
     df_general = elt_data()
-    logger.info("+++ General DataFrame to be Analyzed: +++")
-    df_general.show(200)
-    df_general.printSchema()
+    if(df_general != False):
+        logger.info("+++ General DataFrame to be Analyzed: +++")
+        df_general.show(100)
+        df_general.printSchema()
+    else:
+        logger.info("Problem during ELT, aborting")
+    
+    # Top Athletes per country based on total distance covered
+    df_topAthletes_totalDistance = top_athletes_totalDistance_perCountry(df_general)
+    
+    # Reordering columns
+    df_topAthletes_totalDistance_ordered = \
+        df_topAthletes_totalDistance.select(
+        col('Nombre'),
+        col('Pais'),
+        col('sum(Distancia_Total_(m))').alias('Distancia_Total_(m)'))
+        
+    df_topAthletes_totalDistance_orderByCountry = df_topAthletes_totalDistance_ordered.orderBy(df_topAthletes_totalDistance_ordered['Pais'],
+                                                                                               df_topAthletes_totalDistance_ordered['Distancia_Total_(m)'].desc())
+    df_topAthletes_totalDistance_orderByCountry.show(100)
+    df_topAthletes_totalDistance_orderByCountry.printSchema()
     
 
 # Read attributes from command line to store each file in a variable
