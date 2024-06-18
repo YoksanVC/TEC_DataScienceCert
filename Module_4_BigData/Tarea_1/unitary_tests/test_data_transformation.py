@@ -1,5 +1,4 @@
-# General Librarias
-from pyspark.sql.functions import lit
+# General Libraries
 from library.data_transformation import dataframe_joiner_byEmail, keep_columns, dataframe_union, aggregate_by_email_date
 
 def test_dataframe_joiner_byEmail(spark_session):

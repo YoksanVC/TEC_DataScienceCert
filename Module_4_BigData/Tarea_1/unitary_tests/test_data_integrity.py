@@ -1,4 +1,4 @@
-# General Librarias
+# General Libraries
 from pyspark.sql.functions import col, udf, to_date
 from pyspark.sql.types import DateType
 from library.data_integrity import clean_nan, date_format
