@@ -1,2 +1,7 @@
 # Run Main code
 spark-submit program_YoksanVarela.py ./datasets/atletas.csv ./datasets/nadar.csv ./datasets/correr.csv
+
+# Unitary Tests per group:
+pytest unitary_tests/test_data_integrity.py
+pytest unitary_tests/test_data_transformation.py
+pytest unitary_tests/test_data_analysis.py

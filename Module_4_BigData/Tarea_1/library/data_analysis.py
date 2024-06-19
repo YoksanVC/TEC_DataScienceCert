@@ -4,6 +4,13 @@ from pyspark.sql.functions import col, when, isnan
 from library.data_integrity import clean_nan
 
 def top_athletes_totalDistance_perCountry(dataframe):
+    """ Function to group the top athletes per country
+
+    Args:
+        dataframe (DataFrame): DataFrame with all Athletes info
+    Returns:
+        df_country_clean: DataFrame with all athletes per country grouped
+    """
     # Loop to check all countries
     columns_to_check = ['Nombre', 'Pais','Distancia_Total_(m)']
     if all(column in dataframe.columns for column in columns_to_check):

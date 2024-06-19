@@ -114,22 +114,22 @@ def test_concatenate_different_columns(spark_session):
     assert concatenated_ds == False
     
 def test_aggr_by_email_date(spark_session):
-    """ Test for aggregation using Correo_Electronico_Atleta and Date columns """
-    sportlog_data = [('jose.artavia@example1.com', 'Ingeniero', 45, '2024-06-21'), 
-                    ('maria.cambronero@example1.com', 'Arquitecto', 32, '2024-06-21'), 
-                    ('jose.artavia@example1.com', 'Ingeniero', 22, '2024-06-21'), 
-                    ('maria.cambronero@example1.com', 'Arquitecto', 44, '2024-06-21')]
-    sportlog_ds = spark_session.createDataFrame(sportlog_data,['Correo_Electronico_Atleta', 'Puesto', 'Distancia_Total_(m)','Fecha'])
+    """ Test for aggregation using Correo_Electronico_Atleta and Date columns, and the average por day calculus """
+    sportlog_data = [('jose.artavia@example1.com', 'Correr', 45, '2024-06-21'), 
+                    ('maria.cambronero@example1.com', 'Nadar', 32, '2024-06-21'), 
+                    ('jose.artavia@example1.com', 'Correr', 22, '2024-06-21'), 
+                    ('maria.cambronero@example1.com', 'Nadar', 44, '2024-06-21')]
+    sportlog_ds = spark_session.createDataFrame(sportlog_data,['Correo_Electronico_Atleta', 'Deporte', 'Distancia_Total_(m)','Fecha'])
     sportlog_ds.show()
     
     aggregated_ds = aggregate_by_email_date(sportlog_ds)
     
     expected_ds = spark_session.createDataFrame(
         [
-            ('maria.cambronero@example1.com', '2024-06-21', 76),
-            ('jose.artavia@example1.com', '2024-06-21', 67)
+            ('maria.cambronero@example1.com', '2024-06-21', 76, 2, 38.0),
+            ('jose.artavia@example1.com', '2024-06-21', 67, 2, 33.5)
         ],
-        ['Correo_Electronico_Atleta', 'Fecha','sum(Distancia_Total_(m))'])
+        ['Correo_Electronico_Atleta', 'Fecha','sum(Distancia_Total_(m))', 'count(Correo_Electronico_Atleta)', 'Distancia_promedio_dia(m)'])
     
     expected_ds.show()
     aggregated_ds.show()
@@ -138,21 +138,21 @@ def test_aggr_by_email_date(spark_session):
 
 def test_aggr_NaN_value(spark_session):
     """ Test for failure mode when NaN values are present """
-    sportlog_data = [('jose.artavia@example1.com', 'Ingeniero', 45, '2024-06-21'), 
-                    ('maria.cambronero@example1.com', 'Arquitecto', 32, '2024-06-21'), 
-                    ('jose.artavia@example1.com', 'Ingeniero', None, '2024-06-21'), 
-                    ('maria.cambronero@example1.com', 'Arquitecto', None, '2024-06-21')]
-    sportlog_ds = spark_session.createDataFrame(sportlog_data,['Correo_Electronico_Atleta', 'Puesto', 'Distancia_Total_(m)','Fecha'])
+    sportlog_data = [('jose.artavia@example1.com', 'Correr', 45, '2024-06-21'), 
+                    ('maria.cambronero@example1.com', 'Nadar', 32, '2024-06-21'), 
+                    ('jose.artavia@example1.com', 'Correr', None, '2024-06-21'), 
+                    ('maria.cambronero@example1.com', 'Nadar', None, '2024-06-21')]
+    sportlog_ds = spark_session.createDataFrame(sportlog_data,['Correo_Electronico_Atleta', 'Deporte', 'Distancia_Total_(m)','Fecha'])
     sportlog_ds.show()
     
     aggregated_ds = aggregate_by_email_date(sportlog_ds)
     
     expected_ds = spark_session.createDataFrame(
         [
-            ('maria.cambronero@example1.com', '2024-06-21', 32),
-            ('jose.artavia@example1.com', '2024-06-21', 45)
+            ('maria.cambronero@example1.com', '2024-06-21', 32, 2, 16.0),
+            ('jose.artavia@example1.com', '2024-06-21', 45, 2, 22.5)
         ],
-        ['Correo_Electronico_Atleta', 'Fecha','sum(Distancia_Total_(m))'])
+        ['Correo_Electronico_Atleta', 'Fecha','sum(Distancia_Total_(m))', 'count(Correo_Electronico_Atleta)', 'Distancia_promedio_dia(m)'])
     
     expected_ds.show()
     aggregated_ds.show()
@@ -161,11 +161,11 @@ def test_aggr_NaN_value(spark_session):
     
 def test_aggr_missing_date (spark_session):
     """ Test for failure mode when one column is missing, in this case, Fecha """
-    sportlog_data = [('jose.artavia@example1.com', 'Ingeniero', 45), 
-                    ('maria.cambronero@example1.com', 'Arquitecto', 32), 
-                    ('jose.artavia@example1.com', 'Ingeniero', 22), 
-                    ('maria.cambronero@example1.com', 'Arquitecto', 44)]
-    sportlog_ds = spark_session.createDataFrame(sportlog_data,['Correo_Electronico_Atleta', 'Puesto', 'Distancia_Total_(m)'])
+    sportlog_data = [('jose.artavia@example1.com', 'Correr', 45), 
+                    ('maria.cambronero@example1.com', 'Nadar', 32), 
+                    ('jose.artavia@example1.com', 'Correr', 22), 
+                    ('maria.cambronero@example1.com', 'Nadar', 44)]
+    sportlog_ds = spark_session.createDataFrame(sportlog_data,['Correo_Electronico_Atleta', 'Deporte', 'Distancia_Total_(m)'])
     sportlog_ds.show()
     
     aggregated_ds = aggregate_by_email_date(sportlog_ds)
@@ -174,21 +174,43 @@ def test_aggr_missing_date (spark_session):
     
 def test_aggr_using_Null(spark_session):
     """ Test for failure mode when aggregating with Null values """
-    sportlog_data = [('jose.artavia@example1.com', 'Ingeniero', 45, '2024-06-21'), 
-                    ('maria.cambronero@example1.com', 'Arquitecto', 32, '2024-06-21'), 
-                    ('jose.artavia@example1.com', 'Ingeniero', 22, None), 
-                    (None, 'Arquitecto', 44, '2024-06-21')]
-    sportlog_ds = spark_session.createDataFrame(sportlog_data,['Correo_Electronico_Atleta', 'Puesto', 'Distancia_Total_(m)','Fecha'])
+    sportlog_data = [('jose.artavia@example1.com', 'Correr', 45, '2024-06-21'), 
+                    ('maria.cambronero@example1.com', 'Nadar', 32, '2024-06-21'), 
+                    ('jose.artavia@example1.com', 'Correr', 22, None), 
+                    (None, 'Nadar', 44, '2024-06-21')]
+    sportlog_ds = spark_session.createDataFrame(sportlog_data,['Correo_Electronico_Atleta', 'Deporte', 'Distancia_Total_(m)','Fecha'])
     sportlog_ds.show()
     
     aggregated_ds = aggregate_by_email_date(sportlog_ds)
     
     expected_ds = spark_session.createDataFrame(
         [
-            ('maria.cambronero@example1.com', '2024-06-21', 32),
-            ('jose.artavia@example1.com', '2024-06-21', 45)
+            ('maria.cambronero@example1.com', '2024-06-21', 32, 1, 32.0),
+            ('jose.artavia@example1.com', '2024-06-21', 45, 1, 45.0)
         ],
-        ['Correo_Electronico_Atleta', 'Fecha','sum(Distancia_Total_(m))'])
+        ['Correo_Electronico_Atleta', 'Fecha','sum(Distancia_Total_(m))', 'count(Correo_Electronico_Atleta)', 'Distancia_promedio_dia(m)'])
+    
+    expected_ds.show()
+    aggregated_ds.show()
+    
+    assert aggregated_ds.collect() == expected_ds.collect()
+
+def test_aggr_average(spark_session):
+    """ Test for averaging the total distance for same date """
+    sportlog_data = [('jose.artavia@example1.com', 'Correr', 45, '2024-06-21'), 
+                    ('jose.artavia@example1.com', 'Correr', 32, '2024-06-21'), 
+                    ('jose.artavia@example1.com', 'Correr', 22, '2024-06-21'), 
+                    ('jose.artavia@example1.com', 'Correr', 44, '2024-06-21')]
+    sportlog_ds = spark_session.createDataFrame(sportlog_data,['Correo_Electronico_Atleta', 'Deporte', 'Distancia_Total_(m)','Fecha'])
+    sportlog_ds.show()
+    
+    aggregated_ds = aggregate_by_email_date(sportlog_ds)
+    
+    expected_ds = spark_session.createDataFrame(
+        [
+            ('jose.artavia@example1.com', '2024-06-21', 143, 4, 35.75)
+        ],
+        ['Correo_Electronico_Atleta', 'Fecha','sum(Distancia_Total_(m))', 'count(Correo_Electronico_Atleta)', 'Distancia_promedio_dia(m)'])
     
     expected_ds.show()
     aggregated_ds.show()
