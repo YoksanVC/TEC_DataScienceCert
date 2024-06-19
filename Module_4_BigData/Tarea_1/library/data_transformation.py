@@ -1,6 +1,6 @@
 # Data Transformation: Function to do different data transformations
 # General imports
-from pyspark.sql.functions import col, when, isnan
+from pyspark.sql.functions import col, when, isnan, sum, count
 from library.data_integrity import clean_nan
 
 def dataframe_joiner_byEmail(dataframe1, dataframe2):
@@ -79,10 +79,19 @@ def aggregate_by_email_date(dataframe):
     if all(column in dataframe.columns for column in columns_to_check):
         # Replacing any NaN with zeros to avoid sum issues
         dataframe_clean = dataframe.withColumn('Distancia_Total_(m)', when(isnan(col('Distancia_Total_(m)')), 0).otherwise(col('Distancia_Total_(m)')))
-        df_aggregated = dataframe_clean.groupBy('Correo_Electronico_Atleta', 'Fecha').sum()
+
+        # Aggregating by Correo_Electronico_Atleta and Fecha.
+        # Also, adding the total distance and counting the email repeated per day to calculate the average after
+        df_aggregated = dataframe_clean.groupBy('Correo_Electronico_Atleta', 'Fecha').agg(
+            sum('Distancia_Total_(m)').alias('sum(Distancia_Total_(m))'),
+            count('Correo_Electronico_Atleta').alias('count(Correo_Electronico_Atleta)')
+        )
+
+        # Adding a new column with the average per day
+        df_aggregated_with_avg = df_aggregated.withColumn('Distancia_promedio_dia(m)',col('sum(Distancia_Total_(m))')/col('count(Correo_Electronico_Atleta)'))
         
         # Cleaning any NaN or Null in groupBy columns
-        df_aggregated_clean = clean_nan(df_aggregated)
+        df_aggregated_clean = clean_nan(df_aggregated_with_avg)
         return df_aggregated_clean
     else:
         print("Dataframe missing Correo_Electronico_Atleta and/or Fecha and/or Distancia_Total_(m) columns")

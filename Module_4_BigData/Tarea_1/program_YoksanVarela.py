@@ -1,7 +1,8 @@
 # General Imports
 import logging
-from pyspark.sql.functions import col, udf, lit
+from pyspark.sql.functions import col, udf, lit, row_number
 from pyspark.sql.types import DateType
+from pyspark.sql.window import Window
 from library.args_parser import ArgParser
 from library.read_csv import read_csv
 from library.data_integrity import clean_nan, date_format
@@ -49,6 +50,7 @@ def elt_data():
             df_nadar_aggregated.select(
             col('Correo_Electronico_Atleta'),
             col('sum(Distancia_Total_(m))').alias('Distancia_Total_(m)'),
+            col('Distancia_promedio_dia(m)'),
             col('Fecha'))
         df_nadar_aggr.show()
         df_nadar_aggr.printSchema()
@@ -62,6 +64,7 @@ def elt_data():
             df_correr_aggregated.select(
             col('Correo_Electronico_Atleta'),
             col('sum(Distancia_Total_(m))').alias('Distancia_Total_(m)'),
+            col('Distancia_promedio_dia(m)'),
             col('Fecha'))
         df_correr_aggr.show()
         df_correr_aggr.printSchema()
@@ -106,6 +109,7 @@ def elt_data():
         col('Pais'),
         col('Deporte').alias('Actividad'),
         col('Distancia_Total_(m)'),
+        col('Distancia_promedio_dia(m)'),
         col('Fecha'))
     
     df_activities.show(200)
@@ -141,12 +145,32 @@ def main():
         df_topAthletes_totalDistance.select(
         col('Nombre'),
         col('Pais'),
-        col('sum(Distancia_Total_(m))').alias('Distancia_Total_(m)'))
-        
+        col('sum(Distancia_Total_(m))').alias('Distancia_Total_(m)'),
+        col('sum(Distancia_promedio_dia(m))').alias('Distancia_promedio_dia(m)'))
+
+    # Ordering by Pais and descending Distancia Total        
     df_topAthletes_totalDistance_orderByCountry = df_topAthletes_totalDistance_ordered.orderBy(df_topAthletes_totalDistance_ordered['Pais'],
                                                                                                df_topAthletes_totalDistance_ordered['Distancia_Total_(m)'].desc())
-    df_topAthletes_totalDistance_orderByCountry.show(100)
+    df_topAthletes_totalDistance_orderByCountry.show()
     df_topAthletes_totalDistance_orderByCountry.printSchema()
+
+    # Creating window add row numbers later
+    windowSpec = Window.partitionBy('Pais').orderBy('Distancia_Total_(m)')
+
+    # Add a row number to each row within the group
+    df_topAthletes_totalDistance_row_number = df_topAthletes_totalDistance_orderByCountry.withColumn('row_number', row_number().over(windowSpec))
+    df_topAthletes_totalDistance_row_number.show()
+        
+    # Limit the number of rows per group
+    max_rows_per_group = 5
+    df_topAthletes_totalDistance_limited = df_topAthletes_totalDistance_row_number.filter(col('row_number') <= max_rows_per_group).drop('row_number')
+    df_topAthletes_totalDistance_limited.show()
+
+    # Showing the final dataframe with the Top Athletes per country
+    df_topAthletes_totalDistance_limited_orderByCountry = df_topAthletes_totalDistance_limited.orderBy(df_topAthletes_totalDistance_limited['Pais'],
+                                                                                               df_topAthletes_totalDistance_limited['Distancia_Total_(m)'].desc())
+    df_topAthletes_totalDistance_limited_orderByCountry.show(100)
+    df_topAthletes_totalDistance_limited_orderByCountry.printSchema()
     
 
 # Read attributes from command line to store each file in a variable
