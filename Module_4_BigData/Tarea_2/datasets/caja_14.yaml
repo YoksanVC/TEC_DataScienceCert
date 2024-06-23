@@ -1,0 +1,83 @@
+- numero_caja: 14
+- compras:
+  - compra:
+      - producto:
+          - nombre: Manzanas
+            cantidad: 3
+            precio_unitario: 600
+      - producto:
+          - nombre: Platanos
+            cantidad: 2
+            precio_unitario: 1140
+  - compra:
+      - producto:
+          - nombre: Leche
+            cantidad: 1
+            precio_unitario: 890
+      - producto:
+          - nombre: Pan
+            cantidad: 1
+            precio_unitario: 900
+      - producto:
+          - nombre: Jugo de naranja
+            cantidad: 2
+            precio_unitario: 1200
+  - compra:
+      - producto:
+          - nombre: Queso
+            cantidad: 1
+            precio_unitario: 1400
+      - producto:
+          - nombre: Tomates
+            cantidad: 5
+            precio_unitario: 300
+  - compra:
+      - producto:
+          - nombre: Zanahorias
+            cantidad: 5
+            precio_unitario: 400
+  - compra:
+      - producto:
+          - nombre: Papas
+            cantidad: 4
+            precio_unitario: 600
+  - compra:
+      - producto:
+          - nombre: Pollo
+            cantidad: 1
+            precio_unitario: 1200
+  - compra:
+      - producto:
+          - nombre: Pescado
+            cantidad: 1
+            precio_unitario: 1400
+  - compra:
+      - producto:
+          - nombre: Yogur
+            cantidad: 3
+            precio_unitario: 200
+  - compra:
+      - producto:
+          - nombre: Naranjas
+            cantidad: 4
+            precio_unitario: 700
+  - compra:
+      - producto:
+          - nombre: Galletas
+            cantidad: 3
+            precio_unitario: 300
+  - compra:
+      - producto:
+          - nombre: Aceite de oliva
+            cantidad: 1
+            precio_unitario: 1200
+  - compra:
+      - producto:
+          - nombre: Arroz
+            cantidad: 2
+            precio_unitario: 760
+  - compra:
+      - producto:
+          - nombre: Frijoles
+            cantidad: 3
+            precio_unitario: 1000

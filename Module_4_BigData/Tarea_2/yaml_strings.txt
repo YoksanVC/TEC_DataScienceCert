@@ -1,0 +1,33 @@
+# How to parse this in code: yaml_data = yaml.safe_load(yaml_string)
+
+yaml_string = """
+- numero_caja = 10
+- compras:
+    - compra:
+        - producto:
+            -   nombre: Manzanas
+                cantidad: 4
+                precio_unitario: 650
+        - producto:
+            -   nombre: Platanos
+                cantidad: 2
+                precio_unitario: 1140
+    - compra:
+        - producto:
+            -   nombre: Leche
+                cantidad: 1
+                precio_unitario: 890
+        - producto:
+            -   nombre: Pan
+                cantidad: 1
+                precio_unitario: 900
+        - producto:
+            -   nombre: Camote
+                cantidad: 3
+                precio_unitario: 320
+    - compra:
+        - producto:
+            -   nombre: Queso
+                cantidad: 1
+                precio_unitario: 1400
+"""

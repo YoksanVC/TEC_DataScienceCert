@@ -1,0 +1,73 @@
+- numero_caja: 18
+- compras:
+  - compra:
+      - producto:
+          - nombre: Manzanas
+            cantidad: 5
+            precio_unitario: 650
+      - producto:
+          - nombre: Platanos
+            cantidad: 4
+            precio_unitario: 1150
+  - compra:
+      - producto:
+          - nombre: Leche
+            cantidad: 2
+            precio_unitario: 890
+      - producto:
+          - nombre: Pan
+            cantidad: 1
+            precio_unitario: 900
+      - producto:
+          - nombre: Pollo
+            cantidad: 1
+            precio_unitario: 1100
+  - compra:
+      - producto:
+          - nombre: Queso
+            cantidad: 1
+            precio_unitario: 1400
+      - producto:
+          - nombre: Tomates
+            cantidad: 3
+            precio_unitario: 350
+  - compra:
+      - producto:
+          - nombre: Zanahorias
+            cantidad: 5
+            precio_unitario: 400
+  - compra:
+      - producto:
+          - nombre: Naranjas
+            cantidad: 4
+            precio_unitario: 700
+  - compra:
+      - producto:
+          - nombre: Yogur
+            cantidad: 3
+            precio_unitario: 200
+  - compra:
+      - producto:
+          - nombre: Papas
+            cantidad: 3
+            precio_unitario: 600
+  - compra:
+      - producto:
+          - nombre: Arroz
+            cantidad: 1
+            precio_unitario: 700
+  - compra:
+      - producto:
+          - nombre: Pasta
+            cantidad: 2
+            precio_unitario: 500
+  - compra:
+      - producto:
+          - nombre: Aceite de oliva
+            cantidad: 1
+            precio_unitario: 1200
+  - compra:
+      - producto:
+          - nombre: Cereal
+            cantidad: 2
+            precio_unitario: 500
