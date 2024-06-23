@@ -1,0 +1,74 @@
+- numero_caja: 7
+- compras:
+  - compra:
+      - producto:
+          - nombre: Platanos
+            cantidad: 6
+            precio_unitario: 1100
+  - compra:
+      - producto:
+          - nombre: Leche
+            cantidad: 1
+            precio_unitario: 900
+      - producto:
+          - nombre: Pan
+            cantidad: 3
+            precio_unitario: 950
+      - producto:
+          - nombre: Huevos
+            cantidad: 12
+            precio_unitario: 500
+  - compra:
+      - producto:
+          - nombre: Queso
+            cantidad: 2
+            precio_unitario: 1300
+      - producto:
+          - nombre: Zanahorias
+            cantidad: 5
+            precio_unitario: 400
+  - compra:
+      - producto:
+          - nombre: Manzanas
+            cantidad: 4
+            precio_unitario: 650
+  - compra:
+      - producto:
+          - nombre: Tomates
+            cantidad: 3
+            precio_unitario: 350
+  - compra:
+      - producto:
+          - nombre: Pollo
+            cantidad: 1
+            precio_unitario: 1200
+  - compra:
+      - producto:
+          - nombre: Camote
+            cantidad: 3
+            precio_unitario: 320
+  - compra:
+      - producto:
+          - nombre: Papas
+            cantidad: 6
+            precio_unitario: 400
+  - compra:
+      - producto:
+          - nombre: Galletas
+            cantidad: 3
+            precio_unitario: 300
+  - compra:
+      - producto:
+          - nombre: Aceite de oliva
+            cantidad: 1
+            precio_unitario: 1200
+  - compra:
+      - producto:
+          - nombre: Cereal
+            cantidad: 2
+            precio_unitario: 500
+  - compra:
+      - producto:
+          - nombre: Maruchan
+            cantidad: 5
+            precio_unitario: 1200
