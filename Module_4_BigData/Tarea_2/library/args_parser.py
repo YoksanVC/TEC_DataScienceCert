@@ -3,6 +3,12 @@ import argparse
 import os
 
 def yaml_files_loader():
+    """ Function to get a directory from arguments, and return an array with all the
+        YAML files inside and the directory where they are located
+    Returns:
+        yaml_dir: Directory where all YAML are located
+        yaml_files: Array with all YAML files names
+    """
     # Creating a Parser
     parser = argparse.ArgumentParser(description="Processing YAML files directory")
 
