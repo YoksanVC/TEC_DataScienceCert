@@ -1,5 +1,6 @@
 # Run Main code
-spark-submit tarea2_program_YoksanVarela.py
+spark-submit tarea2_program_YoksanVarela.py ./datasets
 
 # Unitary Tests per group:
 pytest unitary_tests/test_yaml_parser.py
+pytest unitary_tests/test_data_transformation.py

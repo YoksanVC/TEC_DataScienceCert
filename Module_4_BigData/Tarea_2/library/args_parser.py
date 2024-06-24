@@ -1,19 +1,23 @@
 # General Imports
 import argparse
+import os
 
-def ArgParser():
+def yaml_files_loader():
     # Creating a Parser
-    parser = argparse.ArgumentParser(description="Processing YAML files...")
+    parser = argparse.ArgumentParser(description="Processing YAML files directory")
 
-    # Creating the 3 arguments expected and parsing them
-    parser.add_argument('yaml_file', type=str, help="YAML File")
+    # Creating one argument expected and parsing it
+    parser.add_argument('yaml_dir', type=str, help="YAML Directory")
     args = parser.parse_args()
 
-    # Storing arguments
-    yaml_file = args.yaml_file
+    # Storing argument
+    yaml_dir = args.yaml_dir
 
     # Printing attributes that are being read
-    print(f"YAML file loaded: {yaml_file}")
+    print(f"YAML directory file: {yaml_dir}")
 
-    # Returning attributes
-    return yaml_file
+    # Read every YAML file in directory
+    yaml_files = [f for f in os.listdir(yaml_dir) if f.endswith('.yaml')]
+
+    # Returning array with all yaml files and the directory where they are
+    return yaml_dir, yaml_files

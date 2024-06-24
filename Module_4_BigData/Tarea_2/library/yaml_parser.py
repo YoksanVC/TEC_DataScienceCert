@@ -37,29 +37,38 @@ def yaml_to_spark_df(yaml_data):
                              StructField('Cantidad', IntegerType()),
                              StructField('Precio', IntegerType())])
     
-    # Numero de caja
+    # Reading numero_caja if possible
     tmp_name = str(yaml_data[0])
-    tmp_split = tmp_name.split(':')
-    numero_caja = int(tmp_split[1].strip('}'))
+
+    if('numero_caja' in tmp_name):
+        tmp_split = tmp_name.split(':')
+        numero_caja = int(tmp_split[1].strip('}'))
+    else:
+        print('numero_caja does not exist in this YAML file, aborting')
+        return False
 
     # Create Row objects that can be interpreted by Spark if they can be converted to a dictionary
-    df_rows = []
-    dictionary = dict(yaml_data[1])
-    compras_counter = 0
-    for compras_totales in dictionary['compras']:
-        prod_counter = 0
-        compras_counter += 1
-        for compra in compras_totales['compra']:
-            for producto in compra['producto']:
-                prod_counter += 1
-                nombre = producto['nombre']
-                cantidad = producto['cantidad']
-                precio_unitario = producto['precio_unitario']
-                df_rows.append([numero_caja, 
-                                compras_counter,
-                                prod_counter,
-                                nombre, cantidad,
-                                precio_unitario])
-    
-    dataframe = spark.createDataFrame(df_rows,csv_schema)
-    return dataframe
+    try:
+        df_rows = []
+        dictionary = dict(yaml_data[1])
+        compras_counter = 0
+        for compras_totales in dictionary['compras']:
+            prod_counter = 0
+            compras_counter += 1
+            for compra in compras_totales['compra']:
+                for producto in compra['producto']:
+                    prod_counter += 1
+                    nombre = producto['nombre']
+                    cantidad = producto['cantidad']
+                    precio_unitario = producto['precio_unitario']
+                    df_rows.append([numero_caja, 
+                                    compras_counter,
+                                    prod_counter,
+                                    nombre, cantidad,
+                                    precio_unitario])
+        
+        dataframe = spark.createDataFrame(df_rows,csv_schema)
+        return dataframe
+    except Exception as ex:
+        print(f"Exception found! {ex}")
+        return False
