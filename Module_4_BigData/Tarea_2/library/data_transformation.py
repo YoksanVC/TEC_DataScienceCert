@@ -43,3 +43,22 @@ def product_count(dataframe):
     else:
         print("Dataframe missing Nombre and/or Cantidad columns")
         return False
+    
+def cashier_total_sell(dataframe):
+    columns_to_check = ['Numero_Caja', 'Cantidad', 'Precio']
+    if all(column in dataframe.columns for column in columns_to_check):
+        # Calculate total sell per product
+        df_total_sell_product = dataframe.withColumn('Total_Vendido_Producto', col('Cantidad') * col('Precio'))
+        
+        # Aggregating by Numero_Caja
+        df_aggregated = df_total_sell_product.groupBy('Numero_Caja').agg(
+            sum('Total_Vendido_Producto').alias('Total_Vendido'),
+        )
+
+        # Ordering by Cantidad
+        df_aggregated_ordered = df_aggregated.orderBy(df_aggregated['Total_Vendido'].desc())
+
+        return df_aggregated_ordered
+    else:
+        print("Dataframe missing Numero_Caja, Cantidad and/or Precio columns")
+        return False
