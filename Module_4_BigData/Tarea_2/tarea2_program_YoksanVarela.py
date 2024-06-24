@@ -62,11 +62,11 @@ def create_csv(tmp_output_dir,file_name):
                 os.rename(old_file_name,new_file_name)
                 
                 # Copy file to Result folder
-                results_dir = './Results'
-                final_file_name = os.path.join(results_dir, file_name)
+                #results_dir = './Results'
+                #final_file_name = os.path.join(results_dir, file_name)
                 
                 # Copy the file
-                shutil.copy(new_file_name, final_file_name)
+                #shutil.copy(new_file_name, final_file_name)
             except Exception as ex:
                 print(f'Exception found: {ex}')
                 return False
@@ -74,7 +74,7 @@ def create_csv(tmp_output_dir,file_name):
             continue
         
     # Remove tmp directory
-    shutil.rmtree(tmp_output_dir)
+    #shutil.rmtree(tmp_output_dir)
     return True
 
 def main():
@@ -99,7 +99,8 @@ def main():
 
     # Creating one CSV file
     output_dir_prod_total = './Results/tmp_prod_total'
-    df_prod_total_amount.coalesce(1).write.csv(output_dir_prod_total, header=True)
+    #df_prod_total_amount.coalesce(1).write.csv(output_dir_prod_total, header=True)
+    df_prod_total_amount.write.csv(output_dir_prod_total, header=True)
 
     # Renaming file to match desire name
     total_prod_filename = 'total_productos.csv'
@@ -120,7 +121,8 @@ def main():
     
     # Creating one CSV file
     output_dir_cashier_total = './Results/tmp_cashier_total'
-    df_cashier_total_amount.coalesce(1).write.csv(output_dir_cashier_total, header=True)
+    #df_cashier_total_amount.coalesce(1).write.csv(output_dir_cashier_total, header=True)
+    df_cashier_total_amount.write.csv(output_dir_cashier_total, header=True)
     
     # Renaming file to match desire name
     cashier_total_filename = 'total_cajas.csv'
