@@ -4,3 +4,4 @@ spark-submit tarea2_program_YoksanVarela.py ./datasets
 # Unitary Tests per group:
 pytest unitary_tests/test_yaml_parser.py
 pytest unitary_tests/test_data_transformation.py
+pytest unitary_tests/test_data_metrics.py
