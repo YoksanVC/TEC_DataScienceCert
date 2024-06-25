@@ -62,11 +62,11 @@ def create_csv(tmp_output_dir,file_name):
                 os.rename(old_file_name,new_file_name)
                 
                 # Copy file to Result folder
-                #results_dir = './Results'
-                #final_file_name = os.path.join(results_dir, file_name)
+                results_dir = './Results'
+                final_file_name = os.path.join(results_dir, file_name)
                 
                 # Copy the file
-                #shutil.copy(new_file_name, final_file_name)
+                shutil.copy(new_file_name, final_file_name)
             except Exception as ex:
                 print(f'Exception found: {ex}')
                 return False
@@ -74,7 +74,7 @@ def create_csv(tmp_output_dir,file_name):
             continue
         
     # Remove tmp directory
-    #shutil.rmtree(tmp_output_dir)
+    shutil.rmtree(tmp_output_dir)
     return True
 
 def main():
