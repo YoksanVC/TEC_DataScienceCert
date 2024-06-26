@@ -2,9 +2,14 @@
 import os
 import logging
 import shutil
+from pyspark.sql import SparkSession
 from library.yaml_parser import yaml_to_spark_df, yaml_file_parser
 from library.args_parser import yaml_files_loader
 from library.data_transformation import dataframe_union, product_count, cashier_total_sell
+from library.data_metrics import max_min_sell, most_sold_product, most_profit_by_product, percentiles
+
+# Create spark session
+spark = SparkSession.builder.appName("Main Code").getOrCreate()
 
 # Configuring logging
 logging.basicConfig(level=logging.INFO)
@@ -57,16 +62,10 @@ def create_csv(tmp_output_dir,file_name):
     for f in os.listdir(tmp_output_dir):
         if('part-' in f):
             try:
-                old_file_name = os.path.join(tmp_output_dir, f)
-                new_file_name = os.path.join(tmp_output_dir, file_name)
-                os.rename(old_file_name,new_file_name)
-                
-                # Copy file to Result folder
                 results_dir = './Results'
-                final_file_name = os.path.join(results_dir, file_name)
-                
-                # Copy the file
-                shutil.copy(new_file_name, final_file_name)
+                old_file_name = os.path.join(tmp_output_dir, f)
+                new_file_name = os.path.join(results_dir, file_name)
+                shutil.copy(old_file_name,new_file_name)
             except Exception as ex:
                 print(f'Exception found: {ex}')
                 return False
@@ -74,7 +73,6 @@ def create_csv(tmp_output_dir,file_name):
             continue
         
     # Remove tmp directory
-    shutil.rmtree(tmp_output_dir)
     return True
 
 def main():
@@ -97,9 +95,8 @@ def main():
         logger.error('Error during aggregation, aborting')
         return False
 
-    # Creating one CSV file
+    # Creating CSV file
     output_dir_prod_total = './Results/tmp_prod_total'
-    #df_prod_total_amount.coalesce(1).write.csv(output_dir_prod_total, header=True)
     df_prod_total_amount.write.csv(output_dir_prod_total, header=True)
 
     # Renaming file to match desire name
@@ -119,14 +116,64 @@ def main():
         logger.error('Error during aggregation, aborting')
         return False
     
-    # Creating one CSV file
+    # Creating CSV file
     output_dir_cashier_total = './Results/tmp_cashier_total'
-    #df_cashier_total_amount.coalesce(1).write.csv(output_dir_cashier_total, header=True)
     df_cashier_total_amount.write.csv(output_dir_cashier_total, header=True)
     
     # Renaming file to match desire name
     cashier_total_filename = 'total_cajas.csv'
     changing_name_status = create_csv(output_dir_cashier_total, cashier_total_filename)
+    if(changing_name_status == False):
+        logger.error('Error changing name from CSV file, aborting')
+        return False
+    
+    # Third CSV: Metrics
+    header = ['Tipo de Metrica', 'Valor']
+    metrics_data = []
+
+    # Cashier with most/less sells
+    max_cashier, min_cashier = max_min_sell(df_all_sells_cleanned)
+    if(max_cashier == False or min_cashier == False):
+        logger.error('Error during metric calculation, aborting')
+        return False
+    metrics_data.append(['caja_con_mas_ventas',max_cashier])
+    metrics_data.append(['caja_con_menos_ventas',min_cashier])
+
+    # Percentiles 25, 50 and 75
+    percentile_25, percentile_50, percentile_75 = percentiles(df_all_sells_cleanned)
+    if(percentile_25 == False or percentile_50 == False or percentile_75 == False):
+        logger.error('Error during metric calculation, aborting')
+        return False
+    metrics_data.append(['percentile_25_por_caja',percentile_25])
+    metrics_data.append(['percentile_50_por_caja',percentile_50])
+    metrics_data.append(['percentile_75_por_caja',percentile_75])
+
+    # Most sold product
+    top_product_sold = most_sold_product(df_all_sells_cleanned)
+    if(top_product_sold == False):
+        logger.error('Error during metric calculation, aborting')
+        return False
+    metrics_data.append(['producto_mas_vendido_por_unidad',top_product_sold])
+
+    # Most profit by product
+    top_profit_product = most_profit_by_product(df_all_sells_cleanned)
+    if(top_profit_product == False):
+        logger.error('Error during metric calculation, aborting')
+        return False
+    metrics_data.append(['producto_de_mayor_ingreso',top_profit_product])
+
+    # Putting together the dataframe
+    df_metrics = spark.createDataFrame(metrics_data, header)
+    df_metrics.show()
+    df_metrics.printSchema()
+
+    # Creating CSV file
+    output_dir_metrics = './Results/tmp_metrics'
+    df_metrics.coalesce(1).write.csv(output_dir_metrics, header=True)
+    
+    # Renaming file to match desire name
+    metrics_filename = 'metricas.csv'
+    changing_name_status = create_csv(output_dir_metrics, metrics_filename)
     if(changing_name_status == False):
         logger.error('Error changing name from CSV file, aborting')
         return False

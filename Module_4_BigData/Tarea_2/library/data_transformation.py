@@ -52,8 +52,7 @@ def cashier_total_sell(dataframe):
         
         # Aggregating by Numero_Caja
         df_aggregated = df_total_sell_product.groupBy('Numero_Caja').agg(
-            sum('Total_Vendido_Producto').alias('Total_Vendido'),
-        )
+            sum('Total_Vendido_Producto').alias('Total_Vendido'))
 
         # Ordering by Cantidad
         df_aggregated_ordered = df_aggregated.orderBy(df_aggregated['Total_Vendido'].desc())
