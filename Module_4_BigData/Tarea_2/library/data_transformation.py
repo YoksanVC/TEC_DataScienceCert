@@ -21,7 +21,7 @@ def dataframe_union(dataframe1, dataframe2):
         return False
     
 def product_count(dataframe):
-    """ Functio to aggregate by Nombre and add the amount of product per name
+    """ Function to aggregate by Nombre and add the amount of product per name
 
     Args:
         dataframe (Spark Dataframe): Dataframe to be aggregated
@@ -45,6 +45,14 @@ def product_count(dataframe):
         return False
     
 def cashier_total_sell(dataframe):
+    """ Function to calculate the amount of total cash in a cashier
+
+    Args:
+        dataframe (Spark dataframe): Dataframe to be analyzed
+
+    Returns:
+        df_aggregated_ordered: Dataframe ordered in a descending way of the amount of total cash per cashier
+    """
     columns_to_check = ['Numero_Caja', 'Cantidad', 'Precio']
     if all(column in dataframe.columns for column in columns_to_check):
         # Calculate total sell per product
