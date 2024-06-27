@@ -130,7 +130,22 @@ def test_percentile_calculation(spark_session):
                                                    'Precio'])
     
     percentile_25, percentile_50, percentile_75 = percentiles(df_ds)
-
+    
+    """ For reference, this is the table with the Total amounts:
+    Numero_Caja	Numero_Compra	Numero_Producto	Nombre		Cantidad	Precio	Total Vendido
+    24	        1			    1	 			'Aguacate'	 2		    550		1100
+    27	        1			    2	 			'Sandia'	 1			1200	1200
+    22	        2			    1	 			'Sandia'	 1			1200	1200
+    20	        1			    1	 			'Aguacate'	 3			550		1650
+    22	        2			    1	 			'Aguacate'	 4			550		2200
+    23	        1			    2	 			'Sandia'	 2			1200	2400
+    27	        2			    1	 			'Sandia'	 2			1200	2400
+    28	        1			    1	 			'Jocote'	 12			200		2400
+    21	        1			    1	 			'Jocote'	 15			200		3000
+    25	        1			    2	 			'Sandia'     3			1200	3600
+    26	        1			    1	 			'Jocote'     18			200		3600
+    23	        2			    1	 			'Sandia'     4			1200	4800
+    """
     assert percentile_25 == '1650'
     assert percentile_50 == '2400'
     assert percentile_75 == '3600'
