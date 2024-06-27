@@ -97,7 +97,7 @@ def main():
 
     # Creating CSV file
     output_dir_prod_total = './Results/tmp_prod_total'
-    df_prod_total_amount.write.csv(output_dir_prod_total, header=True)
+    df_prod_total_amount.coalesce(1).write.csv(output_dir_prod_total, header=True)
 
     # Renaming file to match desire name
     total_prod_filename = 'total_productos.csv'
@@ -118,7 +118,7 @@ def main():
     
     # Creating CSV file
     output_dir_cashier_total = './Results/tmp_cashier_total'
-    df_cashier_total_amount.write.csv(output_dir_cashier_total, header=True)
+    df_cashier_total_amount.coalesce(1).write.csv(output_dir_cashier_total, header=True)
     
     # Renaming file to match desire name
     cashier_total_filename = 'total_cajas.csv'
