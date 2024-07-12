@@ -8,3 +8,10 @@ jupyter notebook --ip=0.0.0.0 --port=8888 --allow-root
 
 # Levantar la sesion de postgres
 psql -h host.docker.internal -p 5433 -U postgres
+
+# Ejecucion del programa Main
+spark-submit process_etl_YoksanVarela.py ./datasets/all_video_games_info.csv ./datasets/vgchartz_sales_2024.csv
+
+
+# Ejecucion de las pruebas unitarias
+pytest unitary_tests/test_data_integrity.py
