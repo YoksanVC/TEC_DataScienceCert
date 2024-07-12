@@ -1,0 +1,10 @@
+# Construir y correr las imagenes
+docker build --tag proyecto_yoksanvarela .
+docker run --name tarea3-db -e POSTGRES_PASSWORD=testPassword -p 5433:5432 -d postgres
+docker run -p 8888:8888 -i -t proyecto_yoksanvarela /bin/bash
+
+# Levantar los cuadernos de Jupyter
+jupyter notebook --ip=0.0.0.0 --port=8888 --allow-root
+
+# Levantar la sesion de postgres
+psql -h host.docker.internal -p 5433 -U postgres
