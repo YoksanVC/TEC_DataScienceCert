@@ -1,7 +1,8 @@
 # Construir y correr las imagenes
 docker build --tag proyecto_yoksanvarela .
-docker run --name tarea3-db -e POSTGRES_PASSWORD=testPassword -p 5433:5432 -d postgres
-docker run -p 8888:8888 -i -t proyecto_yoksanvarela /bin/bash
+docker network create my_network
+docker run --name tarea3_db -e POSTGRES_PASSWORD=testPassword -p 5433:5432 --network my_network -d postgres
+docker run --network my_network -p 8888:8888 -i -t proyecto_yoksanvarela /bin/bash
 
 # Levantar los cuadernos de Jupyter
 jupyter notebook --ip=0.0.0.0 --port=8888 --allow-root
@@ -10,8 +11,8 @@ jupyter notebook --ip=0.0.0.0 --port=8888 --allow-root
 psql -h host.docker.internal -p 5433 -U postgres
 
 # Ejecucion del programa Main
-spark-submit process_etl_YoksanVarela.py ./datasets/all_video_games_info.csv ./datasets/vgchartz_sales_2024.csv
-
+spark-submit --jars postgresql-42.7.3.jar process_etl_YoksanVarela.py ./datasets/all_video_games_info.csv ./datasets/vgchartz_sales_2024.csv
 
 # Ejecucion de las pruebas unitarias
 pytest unitary_tests/test_data_integrity.py
+pytest unitary_tests/test_data_transformation.py

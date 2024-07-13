@@ -1,16 +1,29 @@
 # General Imports
+import findspark
+findspark.init('/usr/lib/python3.7/site-packages/pyspark')
+
 import logging
 import sys
-from pyspark.sql.functions import col, udf, lit, row_number
+from pyspark.sql import SparkSession
+from pyspark.sql.functions import col, udf
 from pyspark.sql.types import DateType
-from pyspark.sql.window import Window
 from library.args_parser import ArgParser
 from library.read_csv import read_csv
 from library.data_integrity import nan_count, fill_nan_with_value, fill_nan_with_mean, date_format
+from library.data_transformation import lower_case
+from library.postgresql_db import save_in_db
 
 # Configuring logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+# Setting up Spark session
+spark = SparkSession \
+    .builder \
+    .appName("Video Games Spark Session") \
+    .config("spark.driver.extraClassPath", "postgresql-42.7.3.jar") \
+    .config("spark.executor.extraClassPath", "postgresql-42.7.3.jar") \
+    .getOrCreate()
 
 # General Function
 def etl_data():
@@ -18,8 +31,8 @@ def etl_data():
     vg_info_csv_file, vg_sales_csv_file = ArgParser()
 
     # Reading each CSV file and create its corresponding dataframe
-    df_vg_info = read_csv(vg_info_csv_file)
-    df_vg_sales = read_csv(vg_sales_csv_file)
+    df_vg_info = read_csv(vg_info_csv_file, spark)
+    df_vg_sales = read_csv(vg_sales_csv_file, spark)
     if(df_vg_info == False or df_vg_sales == False):
         logger.error("Error during dataframe creation, aborting execution")
         sys.exit(1) 
@@ -42,7 +55,7 @@ def etl_data():
         df_vg_info_nan_replaced.show()
     else:
         logger.error("Error during filling column with Mean values, aborting")
-        sys.exit(1) 
+        sys.exit(1)
 
     # Counting NaN and Null again
     df_vg_info_nan_null_count_2 = nan_count(df_vg_info_nan_replaced)
@@ -98,6 +111,21 @@ def main():
     logger.info("Video Games Sales Dataframe:")
     df_video_games_sales.printSchema()
     df_video_games_sales.show()
+
+    # Lowering case for both dataframes
+    df_video_games_info_lower = lower_case(df_video_games_info)
+    df_video_games_info_lower.show()
+
+    df_video_games_sales_lower = lower_case(df_video_games_sales)
+    df_video_games_sales_lower.show()
+
+    # Saving dataframes in POSTGRESQL DB
+    vg_info_saving_status = save_in_db(df_video_games_info_lower,"video_game_info")
+    vg_sales_saving_status = save_in_db(df_video_games_sales_lower,"video_game_sales")
+
+    if(vg_info_saving_status == False or vg_sales_saving_status == False):
+        logger.error("Error during saving dataframes in DB, aborting")
+        sys.exit(1)
 
     # Successful execution, closing program
     sys.exit(0)
