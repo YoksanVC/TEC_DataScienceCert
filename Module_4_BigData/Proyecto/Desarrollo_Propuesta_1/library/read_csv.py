@@ -42,7 +42,7 @@ def read_csv(csv_file_name):
     try:
         dataframe = spark.read.csv(csv_file_name,
                                 schema=csv_schema,
-                                header=False)
+                                header=True)
         dataframe.printSchema()
         dataframe.show()
         return dataframe
