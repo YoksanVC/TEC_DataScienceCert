@@ -10,8 +10,8 @@ from pyspark.sql.types import DateType
 from library.args_parser import ArgParser
 from library.read_csv import read_csv
 from library.data_integrity import nan_count, fill_nan_with_value, fill_nan_with_mean, date_format
-from library.data_transformation import lower_case
-from library.postgresql_db import save_in_db
+from library.data_transformation import lower_case, dataframe_joiner_title
+from library.postgresql_db import save_in_db, read_from_db
 
 # Configuring logging
 logging.basicConfig(level=logging.INFO)
@@ -84,7 +84,7 @@ def etl_data():
     # Fill Nan and Null in Genres, Publisher, Product Rating and User Score with "Not Specified"
     df_vg_sales_nan_replaced = fill_nan_with_value(df_vg_sales_short,'console','Not Specified')
     df_vg_sales_nan_replaced = fill_nan_with_value(df_vg_sales_nan_replaced,'genre','Not Specified')
-    df_vg_sales_nan_replaced = fill_nan_with_value(df_vg_sales_nan_replaced,'publisher','Not Specified')
+    df_vg_sales_nan_replaced = fill_nan_with_value(df_vg_sales_nan_replaced,'game_publisher','Not Specified')
     df_vg_sales_nan_replaced.show()
 
     # Counting NaN and Null again
@@ -127,6 +127,61 @@ def main():
         logger.error("Error during saving dataframes in DB, aborting")
         sys.exit(1)
 
+    # Reading from DB to verify function
+    df_video_games_info_db = read_from_db("video_game_info", spark)
+    if(df_video_games_info_db == False):
+        logger.error("Error during loading dataframes from DB, aborting")
+        sys.exit(1)
+    else:
+        df_video_games_info_db.show()
+        df_video_games_info_db.printSchema()
+        logger.info("Loading Video Games Info completed successfully")
+
+    df_video_games_sales_db = read_from_db("video_game_sales", spark)
+    if(df_video_games_sales_db == False):
+        logger.error("Error during loading dataframes from DB, aborting")
+        sys.exit(1)
+    else:
+        df_video_games_sales_db.show()
+        df_video_games_sales_db.printSchema()
+        logger.info("Loading Video Games Sales completed successfully")
+
+    # Joint by title of the two dataframes
+    df_vg_joint = dataframe_joiner_title(df_video_games_sales_db, df_video_games_info_db)
+    df_vg_joint.show()
+    df_vg_joint.printSchema()
+
+    # Selecting and renaming the important columns:
+    df_video_game_reordered = \
+        df_vg_joint.select(
+        col('game_title'),
+        col('console'),
+        col('game_publisher').alias('publisher'),
+        col('Release Date').alias('release_date'),
+        col('Genres').alias('genre'),
+        col('Product Rating').alias('rating'),
+        col('User Score').alias('user_score'),
+        col('total_sales'))
+    df_video_game_reordered.show()
+    df_video_game_reordered.printSchema()
+
+    # Storing the resulting dataframe to POSTGRESQL DB
+    df_video_games_ml_ready = save_in_db(df_video_game_reordered,"video_games_ml_ready")
+
+    if(df_video_games_ml_ready == False):
+        logger.error("Error during saving dataframes in DB, aborting")
+        sys.exit(1)
+
+    # Reading it back to check results and finish
+    df_video_games_ml_ready_db = read_from_db("video_games_ml_ready", spark)
+    if(df_video_games_ml_ready_db == False):
+        logger.error("Error during loading dataframes from DB, aborting")
+        sys.exit(1)
+    else:
+        df_video_games_ml_ready_db.show()
+        df_video_games_ml_ready_db.printSchema()
+        logger.info("ETL and Pre-processing have been completed!")
+    
     # Successful execution, closing program
     sys.exit(0)
     

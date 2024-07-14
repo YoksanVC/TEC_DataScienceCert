@@ -22,10 +22,10 @@ def read_csv(csv_file_name,spark_session):
                                 StructField('Platforms Info', StringType())])
     elif("vgchartz" in csv_file_name):
         csv_schema = StructType([StructField('img', StringType()),
-                                StructField('title', StringType()),
+                                StructField('game_title', StringType()),
                                 StructField('console', StringType()),
                                 StructField('genre', StringType()),
-                                StructField('publisher', StringType()),
+                                StructField('game_publisher', StringType()),
                                 StructField('developer', StringType()),
                                 StructField('critic_score', FloatType()),
                                 StructField('total_sales', FloatType()),
