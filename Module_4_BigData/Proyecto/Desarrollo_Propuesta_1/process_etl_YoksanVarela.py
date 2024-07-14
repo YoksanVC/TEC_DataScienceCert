@@ -1,5 +1,5 @@
 # General Imports
-import findspark
+import findspark # type: ignore
 findspark.init('/usr/lib/python3.7/site-packages/pyspark')
 
 import logging
