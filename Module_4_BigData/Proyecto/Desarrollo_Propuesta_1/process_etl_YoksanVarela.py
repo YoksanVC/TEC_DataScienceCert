@@ -5,7 +5,7 @@ findspark.init('/usr/lib/python3.7/site-packages/pyspark')
 import logging
 import sys
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, udf, mean, count
+from pyspark.sql.functions import col, udf
 from pyspark.sql.types import DateType
 from library.args_parser import ArgParser
 from library.read_csv import read_csv
@@ -82,17 +82,17 @@ def etl_data():
     df_vg_sales_nan_null_count.show()
 
     # Fill Nan and Null in Genres, Publisher, Product Rating and User Score with "Not Specified"
-    df_vg_sales_ready = fill_nan_with_value(df_vg_sales_short,'console','Not Specified')
-    df_vg_sales_ready = fill_nan_with_value(df_vg_sales_ready,'genre','Not Specified')
-    df_vg_sales_ready = fill_nan_with_value(df_vg_sales_ready,'game_publisher','Not Specified')
-    df_vg_sales_ready.show()
+    df_vg_sales_nan_replaced = fill_nan_with_value(df_vg_sales_short,'console','Not Specified')
+    df_vg_sales_nan_replaced = fill_nan_with_value(df_vg_sales_nan_replaced,'genre','Not Specified')
+    df_vg_sales_nan_replaced = fill_nan_with_value(df_vg_sales_nan_replaced,'game_publisher','Not Specified')
+    df_vg_sales_nan_replaced.show()
 
     # Counting NaN and Null again
-    df_vg_sales_nan_null_count_2 = nan_count(df_vg_sales_ready)
+    df_vg_sales_nan_null_count_2 = nan_count(df_vg_sales_nan_replaced)
     df_vg_sales_nan_null_count_2.show()
 
     # Even though there is a lot NaN in total_sales, there is not possible to generate that data, therefore, those lines are dropped
-    #df_vg_sales_ready = df_vg_sales_nan_replaced.dropna()
+    df_vg_sales_ready = df_vg_sales_nan_replaced.dropna()
 
     # Returning clean dataframes
     return df_vg_info_ready, df_vg_sales_ready
@@ -165,31 +165,15 @@ def main():
     df_video_game_reordered.show()
     df_video_game_reordered.printSchema()
 
-    # Checking for NaN or Null in total_sales after joint
-    df_vg_sales_nan_null_count_3 = nan_count(df_video_game_reordered)
-    df_vg_sales_nan_null_count_3.show()
-
-    # Filling NaN in total_sales with mean
-    df_video_game_cleanned = fill_nan_with_mean(df_video_game_reordered,'total_sales')
-    if (df_video_game_cleanned != False):
-        df_video_game_cleanned.show()
-    else:
-        logger.error("Error during filling column with Mean values, aborting")
-        sys.exit(1)
-
-    # Checking for NaN or Null in total_sales after cleaning
-    df_vg_sales_nan_null_count_4 = nan_count(df_video_game_cleanned)
-    df_vg_sales_nan_null_count_4.show()
-
     # Storing the resulting dataframe to POSTGRESQL DB
-    df_video_games_ml_ready = save_in_db(df_video_game_cleanned,"video_games_ml_ready")
+    df_video_games_ml_ready = save_in_db(df_video_game_reordered,"video_games_etl_completed")
 
     if(df_video_games_ml_ready == False):
         logger.error("Error during saving dataframes in DB, aborting")
         sys.exit(1)
 
     # Reading it back to check results and finish
-    df_video_games_ml_ready_db = read_from_db("video_games_ml_ready", spark)
+    df_video_games_ml_ready_db = read_from_db("video_games_etl_completed", spark)
     if(df_video_games_ml_ready_db == False):
         logger.error("Error during loading dataframes from DB, aborting")
         sys.exit(1)
